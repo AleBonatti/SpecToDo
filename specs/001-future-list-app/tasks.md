@@ -28,16 +28,16 @@ Project uses Next.js 15 App Router structure:
 
 **Purpose**: Initialize Next.js project with Supabase, Tailwind, and core dependencies
 
-- [ ] T001 Initialize Next.js 15 project with TypeScript and pnpm
-- [ ] T002 [P] Configure Tailwind CSS 4 in tailwind.config.ts
-- [ ] T003 [P] Configure TypeScript in tsconfig.json
-- [ ] T004 [P] Configure ESLint in .eslintrc.json
-- [ ] T005 [P] Configure Prettier in .prettierrc
-- [ ] T006 [P] Create .env.example with Supabase placeholders
-- [ ] T007 Install dependencies: Supabase Client SDK, Lucide Icons, Framer Motion
-- [ ] T008 Create project directory structure per plan.md (app/, components/, features/, lib/)
-- [ ] T009 [P] Create README.md with setup instructions
-- [ ] T010 [P] Configure next.config.js for optimal performance
+- [X] T001 Initialize Next.js 15 project with TypeScript and pnpm
+- [X] T002 [P] Configure Tailwind CSS 4 in tailwind.config.ts
+- [X] T003 [P] Configure TypeScript in tsconfig.json
+- [X] T004 [P] Configure ESLint in .eslintrc.json
+- [X] T005 [P] Configure Prettier in .prettierrc
+- [X] T006 [P] Create .env.example with Supabase placeholders
+- [X] T007 Install dependencies: Supabase Client SDK, Lucide Icons, Framer Motion
+- [X] T008 Create project directory structure per plan.md (app/, components/, features/, lib/)
+- [X] T009 [P] Create README.md with setup instructions
+- [X] T010 [P] Configure next.config.js for optimal performance
 
 ---
 
@@ -47,23 +47,23 @@ Project uses Next.js 15 App Router structure:
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T011 Set up Supabase project and note credentials
-- [ ] T012 Create .env.local with Supabase URL and anon key
-- [ ] T013 Apply database schema from contracts/supabase.sql to Supabase project
-- [ ] T014 Generate TypeScript types from Supabase schema in lib/supabase/types.ts
-- [ ] T015 [P] Create Supabase browser client in lib/supabase/client.ts
-- [ ] T016 [P] Create Supabase server client in lib/supabase/server.ts
-- [ ] T017 [P] Create shared utility functions in lib/utils.ts
-- [ ] T018 [P] Create LocalStorage utilities in lib/storage.ts
-- [ ] T019 [P] Create base UI components: Button in components/ui/Button.tsx
-- [ ] T020 [P] Create base UI components: Input in components/ui/Input.tsx
-- [ ] T021 [P] Create base UI components: Card in components/ui/Card.tsx
-- [ ] T022 [P] Create base UI components: Select in components/ui/Select.tsx
-- [ ] T023 [P] Create base UI components: Tag in components/ui/Tag.tsx
-- [ ] T024 [P] Create layout components: Header in components/layout/Header.tsx
-- [ ] T025 [P] Create layout components: Container in components/layout/Container.tsx
-- [ ] T026 Create root layout in app/layout.tsx with Tailwind imports and providers
-- [ ] T027 Create global styles in app/globals.css with Tailwind directives
+- [ ] T011 Set up Supabase project and note credentials (USER ACTION REQUIRED)
+- [ ] T012 Create .env.local with Supabase URL and anon key (USER ACTION REQUIRED)
+- [ ] T013 Apply database schema from contracts/supabase.sql to Supabase project (USER ACTION REQUIRED)
+- [X] T014 Generate TypeScript types from Supabase schema in lib/supabase/types.ts
+- [X] T015 [P] Create Supabase browser client in lib/supabase/client.ts
+- [X] T016 [P] Create Supabase server client in lib/supabase/server.ts
+- [X] T017 [P] Create shared utility functions in lib/utils.ts
+- [X] T018 [P] Create LocalStorage utilities in lib/storage.ts
+- [X] T019 [P] Create base UI components: Button in components/ui/Button.tsx
+- [X] T020 [P] Create base UI components: Input in components/ui/Input.tsx
+- [X] T021 [P] Create base UI components: Card in components/ui/Card.tsx
+- [X] T022 [P] Create base UI components: Select in components/ui/Select.tsx
+- [X] T023 [P] Create base UI components: Tag in components/ui/Tag.tsx
+- [X] T024 [P] Create layout components: Header in components/layout/Header.tsx
+- [X] T025 [P] Create layout components: Container in components/layout/Container.tsx
+- [X] T026 Create root layout in app/layout.tsx with Tailwind imports and providers
+- [X] T027 Create global styles in app/globals.css with Tailwind directives
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
