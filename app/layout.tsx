@@ -1,8 +1,6 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
+import type { Metadata } from 'next'
+import { inter } from '@/lib/fonts'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: 'FutureList - Your Personal Wishlist',
@@ -18,18 +16,18 @@ export const metadata: Metadata = {
     'trips',
     'books',
   ],
-};
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={inter.variable}>
+      <body className="font-sans antialiased">
         {children}
       </body>
     </html>
-  );
+  )
 }
