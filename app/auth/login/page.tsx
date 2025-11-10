@@ -1,100 +1,100 @@
-'use client'
+'use client';
 
-import { useState, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase'
-import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
-import Loader from '@/components/ui/Loader'
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Loader from '@/components/ui/Loader';
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
-  const [authError, setAuthError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Email validation
   const validateEmail = (email: string): boolean => {
     if (!email.trim()) {
-      setEmailError('Email is required')
-      return false
+      setEmailError('Email is required');
+      return false;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address')
-      return false
+      setEmailError('Please enter a valid email address');
+      return false;
     }
 
-    setEmailError('')
-    return true
-  }
+    setEmailError('');
+    return true;
+  };
 
   // Password validation
   const validatePassword = (password: string): boolean => {
     if (!password) {
-      setPasswordError('Password is required')
-      return false
+      setPasswordError('Password is required');
+      return false;
     }
 
     if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters')
-      return false
+      setPasswordError('Password must be at least 6 characters');
+      return false;
     }
 
-    setPasswordError('')
-    return true
-  }
+    setPasswordError('');
+    return true;
+  };
 
   // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setAuthError('')
+    e.preventDefault();
+    setAuthError('');
 
     // Validate all fields
-    const isEmailValid = validateEmail(email)
-    const isPasswordValid = validatePassword(password)
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
 
     if (!isEmailValid || !isPasswordValid) {
-      return
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      const supabase = createClient()
+      const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
+      });
 
       if (error) {
         // Handle specific error cases
         if (error.message.includes('Invalid login credentials')) {
-          setAuthError('Invalid email or password. Please try again.')
+          setAuthError('Invalid email or password. Please try again.');
         } else if (error.message.includes('Email not confirmed')) {
-          setAuthError('Please verify your email address before signing in.')
+          setAuthError('Please verify your email address before signing in.');
         } else {
-          setAuthError('Unable to sign in. Please try again later.')
+          setAuthError('Unable to sign in. Please try again later.');
         }
-        return
+        return;
       }
 
       // Success - redirect to home
-      router.push('/')
-      router.refresh()
+      router.push('/');
+      router.refresh();
     } catch (error) {
-      setAuthError('Something went wrong. Please try again later.')
-      console.error('Login error:', error)
+      setAuthError('Something went wrong. Please try again later.');
+      console.error('Login error:', error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -137,9 +137,9 @@ export default function LoginPage() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => {
-                setEmail(e.target.value)
-                setEmailError('')
-                setAuthError('')
+                setEmail(e.target.value);
+                setEmailError('');
+                setAuthError('');
               }}
               onBlur={() => validateEmail(email)}
               error={emailError}
@@ -156,9 +156,9 @@ export default function LoginPage() {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value)
-                setPasswordError('')
-                setAuthError('')
+                setPassword(e.target.value);
+                setPasswordError('');
+                setAuthError('');
               }}
               onBlur={() => validatePassword(password)}
               error={passwordError}
@@ -167,13 +167,12 @@ export default function LoginPage() {
             <Button
               type="submit"
               variant="primary"
-              fullWidth
               disabled={isLoading}
               className="relative"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <Loader variant="spinner" size="sm" />
+                  <Loader variant="primary" size="sm" />
                   <span>Signing in...</span>
                 </span>
               ) : (
@@ -185,7 +184,7 @@ export default function LoginPage() {
           {/* Sign up link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link
                 href="/auth/signup"
                 className="font-medium text-sky-600 transition-colors hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
@@ -197,5 +196,5 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

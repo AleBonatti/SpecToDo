@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, Inbox, Plus, X, LogOut } from 'lucide-react'
+import { User, Inbox, Plus, X, LogOut, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
+import { useItems } from '@/lib/hooks/useItems'
+import { useCategories } from '@/lib/hooks/useCategories'
+import type { Item } from '@/lib/services/items'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
@@ -14,57 +17,45 @@ import Dialog from '@/components/ui/Dialog'
 import CategoryPicker from '@/components/ui/CategoryPicker'
 import EmptyState from '@/components/ui/EmptyState'
 import ListItem from '@/components/ui/ListItem'
-
-// Mock categories
-const categories = [
-  { value: 'movies', label: 'Movies' },
-  { value: 'restaurants', label: 'Restaurants' },
-  { value: 'places', label: 'Places' },
-  { value: 'books', label: 'Books' },
-  { value: 'other', label: 'Other' },
-]
-
-// Mock items type
-interface Item {
-  id: string
-  title: string
-  categoryId: string
-  description?: string
-  done: boolean
-}
+import Loader from '@/components/ui/Loader'
 
 export default function HomePage() {
   const router = useRouter()
 
-  // State
-  const [items, setItems] = useState<Item[]>([
-    {
-      id: '1',
-      title: 'Watch Inception',
-      categoryId: 'movies',
-      description: 'Mind-bending thriller by Christopher Nolan',
-      done: false,
-    },
-    {
-      id: '2',
-      title: 'Try Sushi Master downtown',
-      categoryId: 'restaurants',
-      done: false,
-    },
-    {
-      id: '3',
-      title: 'Visit Grand Canyon',
-      categoryId: 'places',
-      description: 'Plan a 3-day trip in spring',
-      done: true,
-    },
-  ])
+  // Fetch items from Supabase
+  const {
+    items: allItems,
+    loading,
+    error,
+    createNewItem,
+    updateExistingItem,
+    deleteExistingItem,
+    toggleStatus,
+  } = useItems()
+
+  // Fetch categories from Supabase
+  const {
+    categories: dbCategories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories()
+
+  // Transform categories for CategoryPicker component
+  const categories = useMemo(() => {
+    return dbCategories.map((cat) => ({
+      value: cat.id,
+      label: cat.name,
+    }))
+  }, [dbCategories])
+
+  // UI State
   const [hideDone, setHideDone] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingItem, setEditingItem] = useState<Item | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Add item form state
   const [newTitle, setNewTitle] = useState('')
@@ -76,63 +67,73 @@ export default function HomePage() {
   const [editCategory, setEditCategory] = useState('')
   const [editDescription, setEditDescription] = useState('')
 
-  // Filter items
-  const filteredItems = items.filter((item) => {
-    if (hideDone && item.done) return false
-    if (selectedCategory && item.categoryId !== selectedCategory) return false
-    return true
-  })
+  // Filter items using useMemo
+  const filteredItems = useMemo(() => {
+    return allItems.filter((item) => {
+      if (hideDone && item.status === 'done') return false
+      if (selectedCategory && item.categoryId !== selectedCategory) return false
+      return true
+    })
+  }, [allItems, hideDone, selectedCategory])
 
   // Handlers
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
     if (!newTitle.trim() || !newCategory) return
 
-    const newItem: Item = {
-      id: Date.now().toString(),
-      title: newTitle.trim(),
-      categoryId: newCategory,
-      description: newDescription.trim() || undefined,
-      done: false,
+    try {
+      setIsSubmitting(true)
+      await createNewItem({
+        categoryId: newCategory,
+        title: newTitle.trim(),
+        description: newDescription.trim() || null,
+      })
+      setNewTitle('')
+      setNewCategory('')
+      setNewDescription('')
+      setShowAddForm(false)
+    } catch (err) {
+      console.error('Failed to create item:', err)
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setItems([newItem, ...items])
-    setNewTitle('')
-    setNewCategory('')
-    setNewDescription('')
-    setShowAddForm(false)
   }
 
-  const handleEditItem = () => {
+  const handleEditItem = async () => {
     if (!editingItem || !editTitle.trim() || !editCategory) return
 
-    setItems(
-      items.map((item) =>
-        item.id === editingItem.id
-          ? {
-              ...item,
-              title: editTitle.trim(),
-              categoryId: editCategory,
-              description: editDescription.trim() || undefined,
-            }
-          : item
-      )
-    )
-    setEditingItem(null)
+    try {
+      setIsSubmitting(true)
+      await updateExistingItem(editingItem.id, {
+        title: editTitle.trim(),
+        description: editDescription.trim() || null,
+      })
+      setEditingItem(null)
+    } catch (err) {
+      console.error('Failed to update item:', err)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const handleDeleteItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id))
-    setDeleteConfirm(null)
+  const handleDeleteItem = async (id: string) => {
+    try {
+      await deleteExistingItem(id)
+      setDeleteConfirm(null)
+    } catch (err) {
+      console.error('Failed to delete item:', err)
+    }
   }
 
-  const handleToggleDone = (id: string, done: boolean) => {
-    setItems(
-      items.map((item) => (item.id === id ? { ...item, done } : item))
-    )
+  const handleToggleDone = async (id: string) => {
+    try {
+      await toggleStatus(id)
+    } catch (err) {
+      console.error('Failed to toggle item status:', err)
+    }
   }
 
   const openEditModal = (id: string) => {
-    const item = items.find((i) => i.id === id)
+    const item = allItems.find((i) => i.id === id)
     if (item) {
       setEditingItem(item)
       setEditTitle(item.title)
@@ -142,7 +143,13 @@ export default function HomePage() {
   }
 
   const getCategoryLabel = (categoryId: string) => {
-    return categories.find((c) => c.value === categoryId)?.label || categoryId
+    const category = dbCategories.find((c) => c.id === categoryId)
+    return category?.name || categoryId
+  }
+
+  const getCategoryColor = (categoryId: string) => {
+    const category = dbCategories.find((c) => c.id === categoryId)
+    return category?.color || undefined
   }
 
   const handleLogout = async () => {
@@ -192,6 +199,38 @@ export default function HomePage() {
 
       {/* Main content */}
       <main className="container-custom py-8">
+        {/* Error message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800"
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              <p className="text-sm font-medium">{error}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Loading state */}
+        {loading || categoriesLoading ? (
+          <div className="flex min-h-[400px] items-center justify-center">
+            <Loader size="lg" text="Loading..." />
+          </div>
+        ) : categoriesError ? (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800"
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              <p className="text-sm font-medium">{categoriesError}</p>
+            </div>
+          </motion.div>
+        ) : (
+          <>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -271,7 +310,8 @@ export default function HomePage() {
                   <Button
                     variant="primary"
                     onClick={handleAddItem}
-                    disabled={!newTitle.trim() || !newCategory}
+                    disabled={!newTitle.trim() || !newCategory || isSubmitting}
+                    loading={isSubmitting}
                   >
                     Add Item
                   </Button>
@@ -283,6 +323,7 @@ export default function HomePage() {
                       setNewCategory('')
                       setNewDescription('')
                     }}
+                    disabled={isSubmitting}
                   >
                     Cancel
                   </Button>
@@ -296,17 +337,17 @@ export default function HomePage() {
             <EmptyState
               icon={Inbox}
               title={
-                items.length === 0
+                allItems.length === 0
                   ? 'No items yet'
                   : 'No items match your filters'
               }
               description={
-                items.length === 0
+                allItems.length === 0
                   ? 'Add your first item to get started with FutureList!'
                   : 'Try adjusting your filters or add a new item.'
               }
               action={
-                items.length === 0
+                allItems.length === 0
                   ? {
                       label: 'Add your first item',
                       onClick: () => setShowAddForm(true),
@@ -333,8 +374,9 @@ export default function HomePage() {
                       id={item.id}
                       title={item.title}
                       category={getCategoryLabel(item.categoryId)}
-                      done={item.done}
-                      description={item.description}
+                      categoryColor={getCategoryColor(item.categoryId)}
+                      done={item.status === 'done'}
+                      description={item.description || undefined}
                       onEdit={openEditModal}
                       onDelete={(id) => setDeleteConfirm(id)}
                       onToggleDone={handleToggleDone}
@@ -345,6 +387,8 @@ export default function HomePage() {
             </motion.div>
           )}
         </motion.div>
+        </>
+        )}
       </main>
 
       {/* Edit modal */}
@@ -377,13 +421,18 @@ export default function HomePage() {
             fullWidth
           />
           <div className="flex justify-end gap-3 pt-4">
-            <Button variant="ghost" onClick={() => setEditingItem(null)}>
+            <Button
+              variant="ghost"
+              onClick={() => setEditingItem(null)}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button
               variant="primary"
               onClick={handleEditItem}
-              disabled={!editTitle.trim() || !editCategory}
+              disabled={!editTitle.trim() || !editCategory || isSubmitting}
+              loading={isSubmitting}
             >
               Save Changes
             </Button>

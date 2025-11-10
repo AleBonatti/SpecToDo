@@ -88,7 +88,10 @@ export default function SignupPage() {
     try {
       const supabase = createClient();
 
-      console.log('Attempting signup with:', { email, hasPassword: !!password });
+      console.log('Attempting signup with:', {
+        email,
+        hasPassword: !!password,
+      });
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -247,13 +250,12 @@ export default function SignupPage() {
             <Button
               type="submit"
               variant="primary"
-              fullWidth
               disabled={isLoading}
-              className="relative"
+              className="relative w-full"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <Loader variant="spinner" size="sm" />
+                  <Loader variant="primary" size="sm" />
                   <span>Creating account...</span>
                 </span>
               ) : (

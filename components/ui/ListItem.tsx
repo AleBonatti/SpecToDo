@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { Edit2, Trash2, Check, Circle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import React from 'react';
+import { Edit2, Trash2, Check, Circle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface ListItemProps {
-  id: string
-  title: string
-  category: string
-  categoryColor?: string
-  done: boolean
-  description?: string
-  onEdit: (id: string) => void
-  onDelete: (id: string) => void
-  onToggleDone: (id: string, done: boolean) => void
-  className?: string
+  id: string;
+  title: string;
+  category: string;
+  categoryColor?: string;
+  done: boolean;
+  description?: string;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  onToggleDone: (id: string, done: boolean) => void;
+  className?: string;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
@@ -53,7 +53,7 @@ const ListItem: React.FC<ListItemProps> = ({
           type="button"
           onClick={() => onToggleDone(id, !done)}
           className={cn(
-            'flex-shrink-0 rounded-full p-1 transition-colors',
+            'flex-0 rounded-full p-1 transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2',
             done
               ? 'text-green-600 hover:text-green-700'
@@ -114,9 +114,9 @@ const ListItem: React.FC<ListItemProps> = ({
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-ListItem.displayName = 'ListItem'
+ListItem.displayName = 'ListItem';
 
-export default ListItem
+export default ListItem;
