@@ -147,11 +147,6 @@ export default function HomePage() {
     return category?.name || categoryId
   }
 
-  const getCategoryColor = (categoryId: string) => {
-    const category = dbCategories.find((c) => c.id === categoryId)
-    return category?.color || undefined
-  }
-
   const handleLogout = async () => {
     setIsLoggingOut(true)
     try {
@@ -375,7 +370,6 @@ export default function HomePage() {
                       id={item.id}
                       title={item.title}
                       category={getCategoryLabel(item.categoryId)}
-                      categoryColor={getCategoryColor(item.categoryId)}
                       done={item.status === 'done'}
                       description={item.description || undefined}
                       onEdit={openEditModal}

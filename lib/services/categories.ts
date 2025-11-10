@@ -14,10 +14,8 @@ type DbCategory = Database['public']['Tables']['categories']['Row']
 // Domain types
 export interface Category {
   id: string
-  userId: string
   name: string
-  color?: string | null
-  icon?: string | null
+  type: 'default' | 'custom'
   createdAt: string
   updatedAt: string
 }
@@ -28,31 +26,22 @@ export interface Category {
 function transformDbCategory(dbCategory: DbCategory): Category {
   return {
     id: dbCategory.id,
-    userId: dbCategory.user_id,
     name: dbCategory.name,
-    color: dbCategory.color,
-    icon: dbCategory.icon,
+    type: dbCategory.type,
     createdAt: dbCategory.created_at,
     updatedAt: dbCategory.updated_at,
   }
 }
 
 /**
- * List all categories for the current user
+ * List all global categories (shared across all users)
  */
 export async function listCategories(): Promise<Category[]> {
   const supabase = createClient()
 
-  // Get current user
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    throw new Error('User not authenticated')
-  }
-
   const { data, error } = await supabase
     .from('categories')
     .select('*')
-    .eq('user_id', user.id)
     .order('name', { ascending: true })
 
   if (error) {
@@ -63,22 +52,15 @@ export async function listCategories(): Promise<Category[]> {
 }
 
 /**
- * Get a single category by ID
+ * Get a single global category by ID
  */
 export async function getCategory(id: string): Promise<Category | null> {
   const supabase = createClient()
-
-  // Get current user
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    throw new Error('User not authenticated')
-  }
 
   const { data, error } = await supabase
     .from('categories')
     .select('*')
     .eq('id', id)
-    .eq('user_id', user.id)
     .single()
 
   if (error) {
