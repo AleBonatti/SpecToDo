@@ -34,6 +34,7 @@ export interface CreateItemInput {
   categoryId: string
   title: string
   description?: string | null
+  status?: 'todo' | 'done'
   priority?: 'low' | 'medium' | 'high' | null
   url?: string | null
   location?: string | null
@@ -162,12 +163,12 @@ export async function createItem(input: CreateItemInput): Promise<Item> {
     category_id: input.categoryId,
     title: input.title.trim(),
     description: input.description?.trim() || null,
+    status: input.status || 'todo',
     priority: input.priority || null,
     url: input.url?.trim() || null,
     location: input.location?.trim() || null,
     note: input.note?.trim() || null,
     target_date: input.targetDate || null,
-    status: 'todo',
   }
 
   const { data, error } = await supabase

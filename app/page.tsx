@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, Inbox, Plus, X, LogOut, AlertCircle } from 'lucide-react'
+import { User, Inbox, Plus, LogOut, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 import { useItems } from '@/lib/hooks/useItems'
 import { useCategories } from '@/lib/hooks/useCategories'
@@ -15,6 +15,7 @@ import Toggle from '@/components/ui/Toggle'
 import Modal from '@/components/ui/Modal'
 import Dialog from '@/components/ui/Dialog'
 import CategoryPicker from '@/components/ui/CategoryPicker'
+import Select from '@/components/ui/Select'
 import EmptyState from '@/components/ui/EmptyState'
 import ListItem from '@/components/ui/ListItem'
 import Loader from '@/components/ui/Loader'
@@ -51,21 +52,22 @@ export default function HomePage() {
   // UI State
   const [hideDone, setHideDone] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [showAddForm, setShowAddForm] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<Item | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Add item form state
-  const [newTitle, setNewTitle] = useState('')
-  const [newCategory, setNewCategory] = useState('')
-  const [newDescription, setNewDescription] = useState('')
-
-  // Edit form state
-  const [editTitle, setEditTitle] = useState('')
-  const [editCategory, setEditCategory] = useState('')
-  const [editDescription, setEditDescription] = useState('')
+  // Unified form state (used for both add and edit)
+  const [formTitle, setFormTitle] = useState('')
+  const [formCategory, setFormCategory] = useState('')
+  const [formDescription, setFormDescription] = useState('')
+  const [formStatus, setFormStatus] = useState<'todo' | 'done'>('todo')
+  const [formPriority, setFormPriority] = useState<'low' | 'medium' | 'high' | ''>('')
+  const [formUrl, setFormUrl] = useState('')
+  const [formLocation, setFormLocation] = useState('')
+  const [formNote, setFormNote] = useState('')
+  const [formTargetDate, setFormTargetDate] = useState('')
 
   // Filter items using useMemo
   const filteredItems = useMemo(() => {
@@ -76,40 +78,87 @@ export default function HomePage() {
     })
   }, [allItems, hideDone, selectedCategory])
 
-  // Handlers
-  const handleAddItem = async () => {
-    if (!newTitle.trim() || !newCategory) return
+  // Helper function to reset form
+  const resetForm = () => {
+    setFormTitle('')
+    setFormCategory('')
+    setFormDescription('')
+    setFormStatus('todo')
+    setFormPriority('')
+    setFormUrl('')
+    setFormLocation('')
+    setFormNote('')
+    setFormTargetDate('')
+    setEditingItem(null)
+  }
 
-    try {
-      setIsSubmitting(true)
-      await createNewItem({
-        categoryId: newCategory,
-        title: newTitle.trim(),
-        description: newDescription.trim() || null,
-      })
-      setNewTitle('')
-      setNewCategory('')
-      setNewDescription('')
-      setShowAddForm(false)
-    } catch (err) {
-      console.error('Failed to create item:', err)
-    } finally {
-      setIsSubmitting(false)
+  // Helper function to open modal for adding new item
+  const openAddModal = () => {
+    resetForm()
+    setIsModalOpen(true)
+  }
+
+  // Helper function to open modal for editing existing item
+  const openEditModal = (id: string) => {
+    const item = allItems.find((i) => i.id === id)
+    if (item) {
+      setEditingItem(item)
+      setFormTitle(item.title)
+      setFormCategory(item.categoryId)
+      setFormDescription(item.description || '')
+      setFormStatus(item.status)
+      setFormPriority(item.priority || '')
+      setFormUrl(item.url || '')
+      setFormLocation(item.location || '')
+      setFormNote(item.note || '')
+      setFormTargetDate(item.targetDate || '')
+      setIsModalOpen(true)
     }
   }
 
-  const handleEditItem = async () => {
-    if (!editingItem || !editTitle.trim() || !editCategory) return
+  // Close modal and reset form
+  const closeModal = () => {
+    setIsModalOpen(false)
+    resetForm()
+  }
+
+  // Unified handler for both add and edit
+  const handleSubmitForm = async () => {
+    if (!formTitle.trim() || !formCategory) return
 
     try {
       setIsSubmitting(true)
-      await updateExistingItem(editingItem.id, {
-        title: editTitle.trim(),
-        description: editDescription.trim() || null,
-      })
-      setEditingItem(null)
+
+      if (editingItem) {
+        // Update existing item
+        await updateExistingItem(editingItem.id, {
+          title: formTitle.trim(),
+          description: formDescription.trim() || null,
+          status: formStatus,
+          priority: formPriority || null,
+          url: formUrl.trim() || null,
+          location: formLocation.trim() || null,
+          note: formNote.trim() || null,
+          targetDate: formTargetDate || null,
+        })
+      } else {
+        // Create new item
+        await createNewItem({
+          categoryId: formCategory,
+          title: formTitle.trim(),
+          description: formDescription.trim() || null,
+          status: formStatus,
+          priority: formPriority || null,
+          url: formUrl.trim() || null,
+          location: formLocation.trim() || null,
+          note: formNote.trim() || null,
+          targetDate: formTargetDate || null,
+        })
+      }
+
+      closeModal()
     } catch (err) {
-      console.error('Failed to update item:', err)
+      console.error('Failed to save item:', err)
     } finally {
       setIsSubmitting(false)
     }
@@ -129,16 +178,6 @@ export default function HomePage() {
       await toggleStatus(id)
     } catch (err) {
       console.error('Failed to toggle item status:', err)
-    }
-  }
-
-  const openEditModal = (id: string) => {
-    const item = allItems.find((i) => i.id === id)
-    if (item) {
-      setEditingItem(item)
-      setEditTitle(item.title)
-      setEditCategory(item.categoryId)
-      setEditDescription(item.description || '')
     }
   }
 
@@ -248,85 +287,15 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Add item button/form */}
-          {!showAddForm ? (
-            <Button
-              variant="primary"
-              icon={<Plus className="h-4 w-4" />}
-              onClick={() => setShowAddForm(true)}
-              className="mb-6"
-            >
-              Add New Item
-            </Button>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mb-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900">
-                  Add New Item
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-                  aria-label="Close form"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <div className="space-y-4">
-                <Input
-                  label="Title"
-                  placeholder="What do you want to do?"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  required
-                  fullWidth
-                />
-                <CategoryPicker
-                  categories={categories}
-                  value={newCategory}
-                  onChange={setNewCategory}
-                  label="Category"
-                  required
-                />
-                <Textarea
-                  label="Description (optional)"
-                  placeholder="Add more details..."
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  rows={3}
-                  fullWidth
-                />
-                <div className="flex gap-3">
-                  <Button
-                    variant="primary"
-                    onClick={handleAddItem}
-                    disabled={!newTitle.trim() || !newCategory || isSubmitting}
-                    loading={isSubmitting}
-                  >
-                    Add Item
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setShowAddForm(false)
-                      setNewTitle('')
-                      setNewCategory('')
-                      setNewDescription('')
-                    }}
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          )}
+          {/* Add item button */}
+          <Button
+            variant="primary"
+            icon={<Plus className="h-4 w-4" />}
+            onClick={openAddModal}
+            className="mb-6"
+          >
+            Add New Item
+          </Button>
 
           {/* Items list or empty state */}
           {filteredItems.length === 0 ? (
@@ -346,7 +315,7 @@ export default function HomePage() {
                 allItems.length === 0
                   ? {
                       label: 'Add your first item',
-                      onClick: () => setShowAddForm(true),
+                      onClick: openAddModal,
                     }
                   : undefined
               }
@@ -386,50 +355,108 @@ export default function HomePage() {
         )}
       </main>
 
-      {/* Edit modal */}
+      {/* Unified Add/Edit modal */}
       <Modal
-        open={!!editingItem}
-        onClose={() => setEditingItem(null)}
-        title="Edit Item"
+        open={isModalOpen}
+        onClose={closeModal}
+        title={editingItem ? 'Edit Item' : 'Add New Item'}
         size="md"
       >
         <div className="space-y-4">
           <Input
             label="Title"
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
+            placeholder="What do you want to do?"
+            value={formTitle}
+            onChange={(e) => setFormTitle(e.target.value)}
             required
             fullWidth
           />
           <CategoryPicker
             categories={categories}
-            value={editCategory}
-            onChange={setEditCategory}
+            value={formCategory}
+            onChange={setFormCategory}
             label="Category"
             required
           />
           <Textarea
             label="Description (optional)"
-            value={editDescription}
-            onChange={(e) => setEditDescription(e.target.value)}
+            placeholder="Add more details..."
+            value={formDescription}
+            onChange={(e) => setFormDescription(e.target.value)}
             rows={3}
+            fullWidth
+          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Select
+              label="Status"
+              value={formStatus}
+              onChange={(e) => setFormStatus(e.target.value as 'todo' | 'done')}
+              options={[
+                { value: 'todo', label: 'To Do' },
+                { value: 'done', label: 'Done' },
+              ]}
+              required
+              fullWidth
+            />
+            <Select
+              label="Priority (optional)"
+              value={formPriority}
+              onChange={(e) => setFormPriority(e.target.value as 'low' | 'medium' | 'high' | '')}
+              options={[
+                { value: '', label: 'None' },
+                { value: 'low', label: 'Low' },
+                { value: 'medium', label: 'Medium' },
+                { value: 'high', label: 'High' },
+              ]}
+              fullWidth
+            />
+          </div>
+          <Input
+            label="URL (optional)"
+            type="url"
+            placeholder="https://example.com"
+            value={formUrl}
+            onChange={(e) => setFormUrl(e.target.value)}
+            fullWidth
+          />
+          <Input
+            label="Target Date (optional)"
+            type="date"
+            value={formTargetDate}
+            onChange={(e) => setFormTargetDate(e.target.value)}
+            fullWidth
+          />
+          <Textarea
+            label="Location (optional)"
+            placeholder="Where is this?"
+            value={formLocation}
+            onChange={(e) => setFormLocation(e.target.value)}
+            rows={2}
+            fullWidth
+          />
+          <Textarea
+            label="Note (optional)"
+            placeholder="Additional notes..."
+            value={formNote}
+            onChange={(e) => setFormNote(e.target.value)}
+            rows={2}
             fullWidth
           />
           <div className="flex justify-end gap-3 pt-4">
             <Button
               variant="ghost"
-              onClick={() => setEditingItem(null)}
+              onClick={closeModal}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
               variant="primary"
-              onClick={handleEditItem}
-              disabled={!editTitle.trim() || !editCategory || isSubmitting}
+              onClick={handleSubmitForm}
+              disabled={!formTitle.trim() || !formCategory || isSubmitting}
               loading={isSubmitting}
             >
-              Save Changes
+              {editingItem ? 'Save Changes' : 'Add Item'}
             </Button>
           </div>
         </div>
