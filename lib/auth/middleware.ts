@@ -5,30 +5,52 @@
  * and role-based authorization checks.
  */
 
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import type { UserRole, AuthContext } from '@/types/auth'
-import { USER_ROLES } from '@/types/auth'
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
+import { getDb, userRoles } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import type { UserRole, AuthContext } from '@/types/auth';
+import { USER_ROLES } from '@/types/auth';
 
 /**
- * Authenticate request and extract user info with role
+ * Authenticate request and extract user info with role (hybrid approach)
+ * 1. First tries JWT app_metadata (fast, no DB query)
+ * 2. Falls back to database if JWT doesn't have role yet
  * Returns null if authentication fails
  */
-export async function authenticate(request: NextRequest): Promise<AuthContext | null> {
+export async function authenticate(
+  request: NextRequest
+): Promise<AuthContext | null> {
   try {
-    const supabase = await createClient()
+    const supabase = await createClient();
     const {
       data: { user },
       error,
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
     if (error || !user) {
-      return null
+      return null;
     }
 
-    // Extract role from JWT claims (injected by Custom Access Token Hook)
-    // Falls back to 'user' if no role is set
-    const role = (user.app_metadata?.user_role as UserRole) || USER_ROLES.USER
+    // Try to get role from JWT first (fast path)
+    const roleFromJWT = user.app_metadata?.user_role as UserRole | undefined;
+    let role: UserRole;
+
+    if (roleFromJWT && Object.values(USER_ROLES).includes(roleFromJWT)) {
+      // Use role from JWT if available
+      role = roleFromJWT;
+    } else {
+      // Fallback: Fetch role from database (for users who haven't re-logged in)
+      const db = getDb();
+      const [userRoleRecord] = await db
+        .select()
+        .from(userRoles)
+        .where(eq(userRoles.userId, user.id))
+        .limit(1);
+
+      // Default to 'user' role if not found
+      role = userRoleRecord?.role || USER_ROLES.USER;
+    }
 
     return {
       user: {
@@ -36,10 +58,10 @@ export async function authenticate(request: NextRequest): Promise<AuthContext | 
         email: user.email,
         role,
       },
-    }
+    };
   } catch (error) {
-    console.error('Authentication error:', error)
-    return null
+    console.error('Authentication error:', error);
+    return null;
   }
 }
 
@@ -48,13 +70,13 @@ export async function authenticate(request: NextRequest): Promise<AuthContext | 
  * Throws error if user is not authenticated
  */
 export async function requireAuth(request: NextRequest): Promise<AuthContext> {
-  const context = await authenticate(request)
+  const context = await authenticate(request);
 
   if (!context) {
-    throw new AuthError('Unauthorized', 401)
+    throw new AuthError('Unauthorized', 401);
   }
 
-  return context
+  return context;
 }
 
 /**
@@ -65,16 +87,16 @@ export async function requireRole(
   request: NextRequest,
   allowedRoles: UserRole[]
 ): Promise<AuthContext> {
-  const context = await requireAuth(request)
+  const context = await requireAuth(request);
 
   if (!allowedRoles.includes(context.user.role)) {
     throw new AuthError(
       `Forbidden: Required role(s): ${allowedRoles.join(', ')}`,
       403
-    )
+    );
   }
 
-  return context
+  return context;
 }
 
 /**
@@ -82,7 +104,7 @@ export async function requireRole(
  * Convenience function for admin-only routes
  */
 export async function requireAdmin(request: NextRequest): Promise<AuthContext> {
-  return requireRole(request, [USER_ROLES.ADMIN])
+  return requireRole(request, [USER_ROLES.ADMIN]);
 }
 
 /**
@@ -93,8 +115,8 @@ export class AuthError extends Error {
     message: string,
     public statusCode: number
   ) {
-    super(message)
-    this.name = 'AuthError'
+    super(message);
+    this.name = 'AuthError';
   }
 }
 
@@ -102,14 +124,16 @@ export class AuthError extends Error {
  * Create unauthorized response (401)
  */
 export function unauthorized(message = 'Unauthorized'): NextResponse {
-  return NextResponse.json({ error: message }, { status: 401 })
+  return NextResponse.json({ error: message }, { status: 401 });
 }
 
 /**
  * Create forbidden response (403)
  */
-export function forbidden(message = 'Forbidden: Insufficient permissions'): NextResponse {
-  return NextResponse.json({ error: message }, { status: 403 })
+export function forbidden(
+  message = 'Forbidden: Insufficient permissions'
+): NextResponse {
+  return NextResponse.json({ error: message }, { status: 403 });
 }
 
 /**
@@ -118,16 +142,13 @@ export function forbidden(message = 'Forbidden: Insufficient permissions'): Next
 export function handleAuthError(error: unknown): NextResponse {
   if (error instanceof AuthError) {
     if (error.statusCode === 401) {
-      return unauthorized(error.message)
+      return unauthorized(error.message);
     }
     if (error.statusCode === 403) {
-      return forbidden(error.message)
+      return forbidden(error.message);
     }
   }
 
-  console.error('Unexpected error in auth middleware:', error)
-  return NextResponse.json(
-    { error: 'Internal server error' },
-    { status: 500 }
-  )
+  console.error('Unexpected error in auth middleware:', error);
+  return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
 }

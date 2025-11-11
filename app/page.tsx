@@ -1,10 +1,9 @@
 'use client';
 
+import React from 'react';
 import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Inbox, Plus, LogOut, AlertCircle } from 'lucide-react';
-import { createClient } from '@/lib/supabase';
+import { Inbox, Plus, AlertCircle } from 'lucide-react';
 import { useItems } from '@/lib/hooks/useItems';
 import { useCategories } from '@/lib/hooks/useCategories';
 import type { Item } from '@/lib/services/items';
@@ -19,10 +18,9 @@ import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
 import ListItem from '@/components/ui/ListItem';
 import Loader from '@/components/ui/Loader';
+import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
 
 export default function HomePage() {
-  const router = useRouter();
-
   // Fetch items from Supabase
   const {
     items: allItems,
@@ -55,7 +53,6 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Unified form state (used for both add and edit)
@@ -189,56 +186,10 @@ export default function HomePage() {
     return category?.name || categoryId;
   };
 
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
-      router.push('/auth/login');
-      router.refresh();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Top bar */}
-      <header className="border-b border-slate-200 bg-white shadow-sm">
-        <div className="container-custom flex h-16 items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-900">
-            <img src="/logo.svg" className="w-40" />
-          </h1>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => router.push('/account')}
-              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
-              aria-label="User menu"
-            >
-              <User className="h-5 w-5" />
-              <span className="hidden sm:inline">Account</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 disabled:opacity-50"
-              aria-label="Logout"
-            >
-              <LogOut className="h-5 w-5" />
-              <span className="hidden sm:inline">
-                {isLoggingOut ? 'Logging out...' : 'Logout'}
-              </span>
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <AuthenticatedLayout>
       {/* Main content */}
-      <main className="container-custom py-8">
+      <div className="container-custom py-8">
         {/* Error message */}
         {error && (
           <motion.div
@@ -358,7 +309,7 @@ export default function HomePage() {
             </motion.div>
           </>
         )}
-      </main>
+      </div>
 
       {/* Unified Add/Edit modal */}
       <Modal
@@ -495,6 +446,6 @@ export default function HomePage() {
         confirmText="Delete"
         confirmVariant="danger"
       />
-    </div>
+    </AuthenticatedLayout>
   );
 }

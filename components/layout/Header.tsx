@@ -42,7 +42,6 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                   Account
                 </Button>
               </Link>
-
               {isAdmin && (
                 <Link href="/admin/users">
                   <Button variant="ghost" size="sm" className="gap-2">
@@ -51,7 +50,6 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                   </Button>
                 </Link>
               )}
-
               <Button
                 variant="ghost"
                 size="sm"

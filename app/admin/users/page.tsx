@@ -15,6 +15,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Loader from '@/components/ui/Loader'
 import EmptyState from '@/components/ui/EmptyState'
+import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
 import { useAdminUsers } from '@/lib/hooks/useAdminUsers'
 import type { AdminUser, CreateUserInput } from '@/lib/services/admin-users'
 import { USER_ROLES, type UserRole } from '@/types/auth'
@@ -112,22 +113,27 @@ export default function AdminUsersPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader size="lg" />
-      </div>
+      <AuthenticatedLayout>
+        <div className="flex min-h-[400px] items-center justify-center">
+          <Loader size="lg" />
+        </div>
+      </AuthenticatedLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
+    <AuthenticatedLayout>
+      {/* Page Header */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="container-custom py-6">
           <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
           <p className="mt-2 text-gray-600">
             Manage user accounts and roles
           </p>
         </div>
+      </div>
+
+      <div className="container-custom py-8">
 
         {/* Error message */}
         {error && (
@@ -326,6 +332,6 @@ export default function AdminUsersPage() {
           </div>
         </Modal>
       </div>
-    </div>
+    </AuthenticatedLayout>
   )
 }
