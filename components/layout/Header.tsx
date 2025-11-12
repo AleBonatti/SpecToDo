@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ListTodo, LogOut, Users, Key, FolderTree, Home, Zap } from 'lucide-react';
 import Container from './Container';
 import Button from '../ui/Button';
 import { useUser } from '@/lib/contexts/UserContext';
+import { cn } from '@/lib/utils';
 
 export interface HeaderProps {
   isAuthenticated?: boolean;
@@ -13,6 +15,7 @@ export interface HeaderProps {
 
 export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
   const { isAdmin } = useUser();
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur shadow-sm supports-backdrop-filter:bg-white/60">
@@ -31,7 +34,13 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
           {isAuthenticated && (
             <nav className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    pathname === '/' && 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                  )}
+                >
                   <Home className="h-4 w-4" />
                   <span className="hidden sm:inline">Dashboard</span>
                 </Button>
@@ -39,19 +48,37 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
               {isAdmin === true && (
                 <>
                   <Link href="/admin/categories">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        pathname === '/admin/categories' && 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                      )}
+                    >
                       <FolderTree className="h-4 w-4" />
                       <span className="hidden sm:inline">Categories</span>
                     </Button>
                   </Link>
                   <Link href="/admin/actions">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        pathname === '/admin/actions' && 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                      )}
+                    >
                       <Zap className="h-4 w-4" />
                       <span className="hidden sm:inline">Actions</span>
                     </Button>
                   </Link>
                   <Link href="/admin/users">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        pathname === '/admin/users' && 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                      )}
+                    >
                       <Users className="h-4 w-4" />
                       <span className="hidden sm:inline">Users</span>
                     </Button>
@@ -59,7 +86,13 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                 </>
               )}
               <Link href="/account">
-                <Button variant="ghost" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    pathname === '/account' && 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                  )}
+                >
                   <Key className="h-4 w-4" />
                   <span className="hidden sm:inline">Account</span>
                 </Button>
