@@ -122,7 +122,7 @@ export default function AdminActionsPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-neutral-200 bg-white shadow-soft">
+      <div className="border-b border-neutral-200 bg-white shadow-sm">
         <div className="container-custom py-8">
           <h1 className="text-3xl font-bold text-neutral-900">
             Action Management
@@ -165,7 +165,7 @@ export default function AdminActionsPage() {
             }}
           />
         ) : (
-          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-soft">
+          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-neutral-200">
                 <thead className="bg-neutral-50">

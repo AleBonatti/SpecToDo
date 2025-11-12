@@ -15,7 +15,7 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
   const { isAdmin } = useUser();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur shadow-soft supports-backdrop-filter:bg-white/60">
+    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur shadow-sm supports-backdrop-filter:bg-white/60">
       <Container>
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}

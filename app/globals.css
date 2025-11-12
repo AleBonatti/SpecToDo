@@ -83,16 +83,19 @@
 
   /* Focus Styles */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-600 ring-offset-2 ring-offset-neutral-50;
+    @apply outline-none ring-2 ring-offset-2 ring-offset-neutral-50;
+    --tw-ring-color: rgb(var(--primary) / 0.6);
   }
 
   /* Selection */
   ::selection {
-    @apply bg-primary-200 text-primary-900;
+    background-color: rgb(var(--primary) / 0.2);
+    color: rgb(var(--primary));
   }
 
   ::-moz-selection {
-    @apply bg-primary-200 text-primary-900;
+    background-color: rgb(var(--primary) / 0.2);
+    color: rgb(var(--primary));
   }
 
   /* Scrollbar Styling (WebKit) */
@@ -121,7 +124,11 @@
 
   /* Custom Focus Ring */
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  }
+
+  .focus-ring:focus-visible {
+    --tw-ring-color: rgb(var(--primary) / 0.6);
   }
 
   /* Container Pattern */
@@ -140,29 +147,45 @@
 
   /* Gradient Text */
   .text-gradient-primary {
-    @apply bg-gradient-primary bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary-light)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   .text-gradient-accent {
-    @apply bg-gradient-accent bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-light)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   /* Card Styles */
   .card {
-    @apply rounded-xl border border-neutral-200 bg-white p-6 shadow-soft transition-shadow hover:shadow-medium;
+    @apply rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md;
   }
 
   .card-hover {
-    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-strong;
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
   }
 
   /* Button Gradients */
   .btn-gradient-primary {
-    @apply bg-gradient-primary text-white shadow-md hover:shadow-glow-primary transition-shadow;
+    background-image: linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary-light)));
+    @apply text-white shadow-md transition-shadow;
+  }
+
+  .btn-gradient-primary:hover {
+    box-shadow: 0 0 20px rgba(var(--primary) / 0.3);
   }
 
   .btn-gradient-accent {
-    @apply bg-gradient-accent text-white shadow-md hover:shadow-glow-accent transition-shadow;
+    background-image: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-light)));
+    @apply text-white shadow-md transition-shadow;
+  }
+
+  .btn-gradient-accent:hover {
+    box-shadow: 0 0 20px rgba(var(--accent) / 0.3);
   }
 
   /* Shimmer Loading Effect */
@@ -185,7 +208,7 @@
 
   /* Smooth Animations */
   .animate-in {
-    @apply animate-fade-in;
+    animation: fadeIn 0.3s ease-in-out;
   }
 
   /* Badge Styles */
@@ -194,19 +217,23 @@
   }
 
   .badge-primary {
-    @apply bg-primary-100 text-primary-700;
+    background-color: rgb(var(--primary) / 0.1);
+    color: rgb(var(--primary-dark));
   }
 
   .badge-accent {
-    @apply bg-accent-100 text-accent-700;
+    background-color: rgb(var(--accent) / 0.1);
+    color: rgb(var(--accent-dark));
   }
 
   .badge-success {
-    @apply bg-success-100 text-success-700;
+    background-color: rgb(var(--success) / 0.1);
+    color: rgb(var(--success-dark));
   }
 
   .badge-danger {
-    @apply bg-danger-100 text-danger-700;
+    background-color: rgb(var(--danger) / 0.1);
+    color: rgb(var(--danger-dark));
   }
 
   /* Grid Patterns */
@@ -215,7 +242,12 @@
     background-size: 20px 20px;
   }
 
-  /* Floating Animation */
+  /* Animations */
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
   @keyframes float {
     0%, 100% {
       transform: translateY(0px);
@@ -225,13 +257,23 @@
     }
   }
 
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
 
   /* Link Styles */
   .link {
-    @apply text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline transition-colors;
+    color: rgb(var(--primary));
+    @apply underline-offset-4 hover:underline transition-colors;
+  }
+
+  .link:hover {
+    color: rgb(var(--primary-dark));
   }
 
   /* Divider */

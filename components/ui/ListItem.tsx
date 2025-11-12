@@ -34,7 +34,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <div
       className={cn(
-        'group relative rounded-xl border border-neutral-200 bg-white p-5 shadow-soft transition-all hover:shadow-medium hover:-translate-y-0.5',
+        'group relative rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5',
         done && 'opacity-70',
         className
       )}
@@ -56,7 +56,7 @@ const ListItem: React.FC<ListItemProps> = ({
           onClick={() => onToggleDone(id, !done)}
           className={cn(
             'flex-0 rounded-full p-1 transition-colors',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
             done
               ? 'text-success-600 hover:text-success-700'
               : 'text-neutral-400 hover:text-neutral-600'
@@ -101,7 +101,7 @@ const ListItem: React.FC<ListItemProps> = ({
           className={cn(
             'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
             'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2'
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
           )}
         >
           <Edit2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -113,7 +113,7 @@ const ListItem: React.FC<ListItemProps> = ({
           className={cn(
             'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
             'text-danger-600 hover:bg-danger-50 hover:text-danger-700',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger-600 focus-visible:ring-offset-2'
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
           )}
         >
           <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
