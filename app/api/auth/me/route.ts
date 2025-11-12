@@ -48,8 +48,20 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error fetching user info:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      env: {
+        hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+      },
+    });
     return NextResponse.json(
-      { error: 'Failed to fetch user info' },
+      {
+        error: 'Failed to fetch user info',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }
