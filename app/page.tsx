@@ -3,7 +3,15 @@
 import React from 'react';
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Inbox, Plus, AlertCircle, ListTodo, CheckCircle2, Circle, TrendingUp } from 'lucide-react';
+import {
+  Inbox,
+  Plus,
+  AlertCircle,
+  ListTodo,
+  CheckCircle2,
+  Circle,
+  TrendingUp,
+} from 'lucide-react';
 import { useItems } from '@/lib/hooks/useItems';
 import { useCategories } from '@/lib/hooks/useCategories';
 import { useActions } from '@/lib/hooks/useActions';
@@ -96,7 +104,10 @@ export default function HomePage() {
   const filteredItems = useMemo(() => {
     return allItems.filter((item) => {
       if (hideDone && item.status === 'done') return false;
-      if (selectedCategories.length > 0 && !selectedCategories.includes(item.categoryId))
+      if (
+        selectedCategories.length > 0 &&
+        !selectedCategories.includes(item.categoryId)
+      )
         return false;
       if (selectedPriorities.length > 0) {
         if (!item.priority || !selectedPriorities.includes(item.priority)) {
@@ -256,7 +267,9 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              <p className="text-sm font-medium">{categoriesError || actionsError}</p>
+              <p className="text-sm font-medium">
+                {categoriesError || actionsError}
+              </p>
             </div>
           </motion.div>
         ) : (
@@ -268,7 +281,9 @@ export default function HomePage() {
             >
               {/* Stats section */}
               <div className="mb-8">
-                <h2 className="mb-4 text-xl font-bold text-neutral-900">Overview</h2>
+                <h2 className="mb-4 text-xl font-bold text-neutral-900">
+                  Overview
+                </h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <StatCard
                     title="Total Items"
@@ -300,26 +315,38 @@ export default function HomePage() {
               {/* Divider */}
               <div className="divider" />
 
-              {/* Filters section */}
+              {/* Filters and Actions section */}
               <div className="mb-6 space-y-4">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex-1 sm:max-w-md">
-                    <MultiSelectCategoryFilter
-                      categories={categories}
-                      selectedCategories={selectedCategories}
-                      onChange={setSelectedCategories}
+                {/* Top row: Category filter, Toggle, and Add button */}
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center flex-1">
+                    <div className="flex-1 sm:max-w-md">
+                      <MultiSelectCategoryFilter
+                        categories={categories}
+                        selectedCategories={selectedCategories}
+                        onChange={setSelectedCategories}
+                      />
+                    </div>
+                    <Toggle
+                      label="Hide done items"
+                      checked={hideDone}
+                      onChange={(e) => setHideDone(e.target.checked)}
                     />
                   </div>
-                  <Toggle
-                    label="Hide done items"
-                    checked={hideDone}
-                    onChange={(e) => setHideDone(e.target.checked)}
-                  />
+                  <Button
+                    variant="primary"
+                    icon={<Plus className="h-4 w-4" />}
+                    onClick={openAddModal}
+                  >
+                    Add New Item
+                  </Button>
                 </div>
 
-                {/* Priority filter */}
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-sm font-medium text-neutral-700">Priority:</span>
+                {/* Bottom row: Priority filter */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium text-neutral-700">
+                    Priority:
+                  </span>
                   {['high', 'medium', 'low'].map((priority) => (
                     <button
                       key={priority}
@@ -337,8 +364,8 @@ export default function HomePage() {
                           ? priority === 'high'
                             ? 'badge-danger ring-2 ring-danger-200'
                             : priority === 'medium'
-                            ? 'badge-accent ring-2 ring-accent-200'
-                            : 'bg-neutral-200 text-neutral-800 ring-2 ring-neutral-300'
+                              ? 'badge-accent ring-2 ring-accent-200'
+                              : 'bg-neutral-200 text-neutral-800 ring-2 ring-neutral-300'
                           : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                       )}
                     >
@@ -356,16 +383,6 @@ export default function HomePage() {
                   )}
                 </div>
               </div>
-
-              {/* Add item button */}
-              <Button
-                variant="primary"
-                icon={<Plus className="h-4 w-4" />}
-                onClick={openAddModal}
-                className="mb-6"
-              >
-                Add New Item
-              </Button>
 
               {/* Items list or empty state */}
               {filteredItems.length === 0 ? (
@@ -438,14 +455,23 @@ export default function HomePage() {
           <div className="space-y-4 px-1">
             {/* Basic Info */}
             <div className="space-y-3">
-              <Input
-                label="Title"
-                placeholder="What do you want to do?"
-                value={formTitle}
-                onChange={(e) => setFormTitle(e.target.value)}
-                required
-                fullWidth
-              />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Select
+                  label="Action (optional)"
+                  value={formAction}
+                  onChange={(e) => setFormAction(e.target.value)}
+                  options={[{ value: '', label: 'None' }, ...actions]}
+                  fullWidth
+                />
+                <Input
+                  label="Title"
+                  placeholder="What do you want to do?"
+                  value={formTitle}
+                  onChange={(e) => setFormTitle(e.target.value)}
+                  required
+                  fullWidth
+                />
+              </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   label="Category"
@@ -458,18 +484,6 @@ export default function HomePage() {
                   required
                   fullWidth
                 />
-                <Select
-                  label="Action (optional)"
-                  value={formAction}
-                  onChange={(e) => setFormAction(e.target.value)}
-                  options={[
-                    { value: '', label: 'None' },
-                    ...actions,
-                  ]}
-                  fullWidth
-                />
-              </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   label="Status"
                   value={formStatus}
@@ -530,12 +544,11 @@ export default function HomePage() {
                   onChange={(e) => setFormUrl(e.target.value)}
                   fullWidth
                 />
-                <Textarea
+                <Input
                   label="Location (optional)"
                   placeholder="Where is this?"
                   value={formLocation}
                   onChange={(e) => setFormLocation(e.target.value)}
-                  rows={1}
                   fullWidth
                 />
               </div>
