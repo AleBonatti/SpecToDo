@@ -10,6 +10,7 @@ export interface Item {
   id: string
   userId: string
   categoryId: string
+  actionId?: string | null
   title: string
   description?: string | null
   status: 'todo' | 'done'
@@ -24,6 +25,7 @@ export interface Item {
 
 export interface CreateItemInput {
   categoryId: string
+  actionId?: string | null
   title: string
   description?: string | null
   status?: 'todo' | 'done'
@@ -35,6 +37,7 @@ export interface CreateItemInput {
 }
 
 export interface UpdateItemInput {
+  actionId?: string | null
   title?: string
   description?: string | null
   status?: 'todo' | 'done'
@@ -59,6 +62,7 @@ function transformApiItem(apiItem: any): Item {
     id: apiItem.id,
     userId: apiItem.user_id || apiItem.userId,
     categoryId: apiItem.category_id || apiItem.categoryId,
+    actionId: apiItem.action_id || apiItem.actionId,
     title: apiItem.title,
     description: apiItem.description,
     status: apiItem.status,

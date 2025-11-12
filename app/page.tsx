@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Inbox, Plus, AlertCircle } from 'lucide-react';
 import { useItems } from '@/lib/hooks/useItems';
 import { useCategories } from '@/lib/hooks/useCategories';
+import { useActions } from '@/lib/hooks/useActions';
 import type { Item } from '@/lib/services/items';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -14,6 +15,7 @@ import Toggle from '@/components/ui/Toggle';
 import Modal from '@/components/ui/Modal';
 import Dialog from '@/components/ui/Dialog';
 import CategoryPicker from '@/components/ui/CategoryPicker';
+import MultiSelectCategoryFilter from '@/components/ui/MultiSelectCategoryFilter';
 import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
 import ListItem from '@/components/ui/ListItem';
@@ -39,6 +41,13 @@ export default function HomePage() {
     error: categoriesError,
   } = useCategories();
 
+  // Fetch actions from Supabase
+  const {
+    actions: dbActions,
+    loading: actionsLoading,
+    error: actionsError,
+  } = useActions();
+
   // Transform categories for CategoryPicker component
   const categories = useMemo(() => {
     return dbCategories.map((cat) => ({
@@ -47,9 +56,17 @@ export default function HomePage() {
     }));
   }, [dbCategories]);
 
+  // Transform actions for Select component
+  const actions = useMemo(() => {
+    return dbActions.map((action) => ({
+      value: action.id,
+      label: action.name,
+    }));
+  }, [dbActions]);
+
   // UI State
   const [hideDone, setHideDone] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -58,6 +75,7 @@ export default function HomePage() {
   // Unified form state (used for both add and edit)
   const [formTitle, setFormTitle] = useState('');
   const [formCategory, setFormCategory] = useState('');
+  const [formAction, setFormAction] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formStatus, setFormStatus] = useState<'todo' | 'done'>('todo');
   const [formPriority, setFormPriority] = useState<
@@ -72,16 +90,17 @@ export default function HomePage() {
   const filteredItems = useMemo(() => {
     return allItems.filter((item) => {
       if (hideDone && item.status === 'done') return false;
-      if (selectedCategory && item.categoryId !== selectedCategory)
+      if (selectedCategories.length > 0 && !selectedCategories.includes(item.categoryId))
         return false;
       return true;
     });
-  }, [allItems, hideDone, selectedCategory]);
+  }, [allItems, hideDone, selectedCategories]);
 
   // Helper function to reset form
   const resetForm = () => {
     setFormTitle('');
     setFormCategory('');
+    setFormAction('');
     setFormDescription('');
     setFormStatus('todo');
     setFormPriority('');
@@ -105,6 +124,7 @@ export default function HomePage() {
       setEditingItem(item);
       setFormTitle(item.title);
       setFormCategory(item.categoryId);
+      setFormAction(item.actionId || '');
       setFormDescription(item.description || '');
       setFormStatus(item.status);
       setFormPriority(item.priority || '');
@@ -132,6 +152,7 @@ export default function HomePage() {
       if (editingItem) {
         // Update existing item
         await updateExistingItem(editingItem.id, {
+          actionId: formAction || null,
           title: formTitle.trim(),
           description: formDescription.trim() || null,
           status: formStatus,
@@ -145,6 +166,7 @@ export default function HomePage() {
         // Create new item
         await createNewItem({
           categoryId: formCategory,
+          actionId: formAction || null,
           title: formTitle.trim(),
           description: formDescription.trim() || null,
           status: formStatus,
@@ -186,6 +208,12 @@ export default function HomePage() {
     return category?.name || categoryId;
   };
 
+  const getActionLabel = (actionId: string | null | undefined) => {
+    if (!actionId) return null;
+    const action = dbActions.find((a) => a.id === actionId);
+    return action?.name || null;
+  };
+
   return (
     <AuthenticatedLayout>
       {/* Main content */}
@@ -205,11 +233,11 @@ export default function HomePage() {
         )}
 
         {/* Loading state */}
-        {loading || categoriesLoading ? (
+        {loading || categoriesLoading || actionsLoading ? (
           <div className="flex min-h-[400px] items-center justify-center">
             <Loader size="lg" text="Loading..." />
           </div>
-        ) : categoriesError ? (
+        ) : categoriesError || actionsError ? (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -217,7 +245,7 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              <p className="text-sm font-medium">{categoriesError}</p>
+              <p className="text-sm font-medium">{categoriesError || actionsError}</p>
             </div>
           </motion.div>
         ) : (
@@ -228,14 +256,14 @@ export default function HomePage() {
               transition={{ duration: 0.3 }}
             >
               {/* Filters section */}
-              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <CategoryPicker
-                  categories={categories}
-                  value={selectedCategory}
-                  onChange={setSelectedCategory}
-                  showAll
-                  label="Filter by category"
-                />
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex-1 sm:max-w-md">
+                  <MultiSelectCategoryFilter
+                    categories={categories}
+                    selectedCategories={selectedCategories}
+                    onChange={setSelectedCategories}
+                  />
+                </div>
                 <Toggle
                   label="Hide done items"
                   checked={hideDone}
@@ -294,6 +322,7 @@ export default function HomePage() {
                         <ListItem
                           id={item.id}
                           title={item.title}
+                          action={getActionLabel(item.actionId)}
                           category={getCategoryLabel(item.categoryId)}
                           done={item.status === 'done'}
                           description={item.description || undefined}
@@ -338,6 +367,18 @@ export default function HomePage() {
                   label="Category"
                   required
                 />
+                <Select
+                  label="Action (optional)"
+                  value={formAction}
+                  onChange={(e) => setFormAction(e.target.value)}
+                  options={[
+                    { value: '', label: 'None' },
+                    ...actions,
+                  ]}
+                  fullWidth
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   label="Status"
                   value={formStatus}
