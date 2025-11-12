@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 export interface ListItemProps {
   id: string;
   title: string;
+  action?: string | null;
   category: string;
   categoryColor?: string;
   done: boolean;
@@ -20,6 +21,7 @@ export interface ListItemProps {
 const ListItem: React.FC<ListItemProps> = ({
   id,
   title,
+  action,
   category,
   categoryColor,
   done,
@@ -69,13 +71,18 @@ const ListItem: React.FC<ListItemProps> = ({
         </button>
       </div>
 
-      {/* Title */}
+      {/* Title with optional action */}
       <h3
         className={cn(
           'mb-2 text-base font-semibold text-slate-900',
           done && 'line-through'
         )}
       >
+        {action && (
+          <span className="mr-1.5 text-sm font-normal text-slate-500">
+            {action}
+          </span>
+        )}
         {title}
       </h3>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ListTodo, LogOut, Users, Key, FolderTree, Home } from 'lucide-react';
+import { ListTodo, LogOut, Users, Key, FolderTree, Home, Zap } from 'lucide-react';
 import Container from './Container';
 import Button from '../ui/Button';
 import { useUser } from '@/lib/contexts/UserContext';
@@ -42,6 +42,12 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                     <Button variant="ghost" size="sm">
                       <FolderTree className="h-4 w-4" />
                       <span className="hidden sm:inline">Categories</span>
+                    </Button>
+                  </Link>
+                  <Link href="/admin/actions">
+                    <Button variant="ghost" size="sm">
+                      <Zap className="h-4 w-4" />
+                      <span className="hidden sm:inline">Actions</span>
                     </Button>
                   </Link>
                   <Link href="/admin/users">

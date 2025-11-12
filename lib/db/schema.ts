@@ -24,11 +24,21 @@ export const categories = pgTable('categories', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
+// Actions table
+export const actions = pgTable('actions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull().unique(),
+  displayOrder: integer('display_order').notNull().default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
 // Items table
 export const items = pgTable('items', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull(),
   categoryId: uuid('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' }),
+  actionId: uuid('action_id').references(() => actions.id, { onDelete: 'set null' }),
   title: text('title').notNull(),
   description: text('description'),
   status: itemStatusEnum('status').notNull().default('todo'),
@@ -52,6 +62,8 @@ export const userRoles = pgTable('user_roles', {
 // Types for TypeScript
 export type Category = typeof categories.$inferSelect
 export type NewCategory = typeof categories.$inferInsert
+export type Action = typeof actions.$inferSelect
+export type NewAction = typeof actions.$inferInsert
 export type Item = typeof items.$inferSelect
 export type NewItem = typeof items.$inferInsert
 export type UserRole = typeof userRoles.$inferSelect

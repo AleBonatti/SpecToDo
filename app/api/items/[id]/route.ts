@@ -76,6 +76,7 @@ export async function PATCH(
     // Parse request body
     const body = await request.json()
     const {
+      actionId,
       title,
       description,
       status,
@@ -89,6 +90,9 @@ export async function PATCH(
     // Build update object with only provided fields
     const updateData: Record<string, any> = {}
 
+    if (actionId !== undefined) {
+      updateData.actionId = actionId || null
+    }
     if (title !== undefined) {
       updateData.title = title.trim()
     }

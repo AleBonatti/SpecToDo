@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const {
       categoryId,
+      actionId,
       title,
       description,
       status = 'todo',
@@ -97,6 +98,7 @@ export async function POST(request: NextRequest) {
       .values({
         userId: context.user.id,
         categoryId,
+        actionId: actionId || null,
         title: title.trim(),
         description: description?.trim() || null,
         status,
