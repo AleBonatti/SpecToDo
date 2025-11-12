@@ -14,6 +14,7 @@ import Toggle from '@/components/ui/Toggle';
 import Modal from '@/components/ui/Modal';
 import Dialog from '@/components/ui/Dialog';
 import CategoryPicker from '@/components/ui/CategoryPicker';
+import MultiSelectCategoryFilter from '@/components/ui/MultiSelectCategoryFilter';
 import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
 import ListItem from '@/components/ui/ListItem';
@@ -49,7 +50,7 @@ export default function HomePage() {
 
   // UI State
   const [hideDone, setHideDone] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -72,11 +73,11 @@ export default function HomePage() {
   const filteredItems = useMemo(() => {
     return allItems.filter((item) => {
       if (hideDone && item.status === 'done') return false;
-      if (selectedCategory && item.categoryId !== selectedCategory)
+      if (selectedCategories.length > 0 && !selectedCategories.includes(item.categoryId))
         return false;
       return true;
     });
-  }, [allItems, hideDone, selectedCategory]);
+  }, [allItems, hideDone, selectedCategories]);
 
   // Helper function to reset form
   const resetForm = () => {
@@ -228,14 +229,14 @@ export default function HomePage() {
               transition={{ duration: 0.3 }}
             >
               {/* Filters section */}
-              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <CategoryPicker
-                  categories={categories}
-                  value={selectedCategory}
-                  onChange={setSelectedCategory}
-                  showAll
-                  label="Filter by category"
-                />
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex-1 sm:max-w-md">
+                  <MultiSelectCategoryFilter
+                    categories={categories}
+                    selectedCategories={selectedCategories}
+                    onChange={setSelectedCategories}
+                  />
+                </div>
                 <Toggle
                   label="Hide done items"
                   checked={hideDone}
