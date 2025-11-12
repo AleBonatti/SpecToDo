@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * Admin Actions Management Page
@@ -7,97 +7,107 @@
  * Only accessible to admin users.
  */
 
-import { useState } from 'react'
-import { Plus, Edit, Trash2, Zap } from 'lucide-react'
-import Button from '@/components/ui/Button'
-import Modal from '@/components/ui/Modal'
-import Input from '@/components/ui/Input'
-import Loader from '@/components/ui/Loader'
-import EmptyState from '@/components/ui/EmptyState'
-import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
-import { useAdminActions } from '@/lib/hooks/useAdminActions'
-import type { AdminAction, CreateActionInput } from '@/lib/services/admin-actions'
+import { useState } from 'react';
+import { Plus, Edit, Trash2, Zap } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Input from '@/components/ui/Input';
+import Loader from '@/components/ui/Loader';
+import EmptyState from '@/components/ui/EmptyState';
+import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
+import { useAdminActions } from '@/lib/hooks/useAdminActions';
+import type {
+  AdminAction,
+  CreateActionInput,
+} from '@/lib/services/admin-actions';
 
 export default function AdminActionsPage() {
-  const { actions, isLoading, error, createNewAction, updateAction, removeAction } = useAdminActions()
+  const {
+    actions,
+    isLoading,
+    error,
+    createNewAction,
+    updateAction,
+    removeAction,
+  } = useAdminActions();
 
   // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingAction, setEditingAction] = useState<AdminAction | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAction, setEditingAction] = useState<AdminAction | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
-  const [formName, setFormName] = useState('')
-  const [formDisplayOrder, setFormDisplayOrder] = useState('0')
+  const [formName, setFormName] = useState('');
+  const [formDisplayOrder, setFormDisplayOrder] = useState('0');
 
   // Delete confirmation
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Reset form
   const resetForm = () => {
-    setFormName('')
-    setFormDisplayOrder('0')
-    setEditingAction(null)
-  }
+    setFormName('');
+    setFormDisplayOrder('0');
+    setEditingAction(null);
+  };
 
   // Open modal for adding new action
   const openAddModal = () => {
-    resetForm()
-    setIsModalOpen(true)
-  }
+    resetForm();
+    setIsModalOpen(true);
+  };
 
   // Open modal for editing existing action
   const openEditModal = (action: AdminAction) => {
-    setEditingAction(action)
-    setFormName(action.name)
-    setFormDisplayOrder(action.displayOrder.toString())
-    setIsModalOpen(true)
-  }
+    setEditingAction(action);
+    setFormName(action.name);
+    setFormDisplayOrder(action.displayOrder.toString());
+    setIsModalOpen(true);
+  };
 
   // Close modal and reset form
   const closeModal = () => {
-    setIsModalOpen(false)
-    resetForm()
-  }
+    setIsModalOpen(false);
+    resetForm();
+  };
 
   // Handle form submission
   const handleSubmitForm = async () => {
-    if (!formName.trim()) return
+    if (!formName.trim()) return;
 
     try {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
 
       if (editingAction) {
         // Update existing action
         await updateAction(editingAction.id, {
           name: formName.trim(),
           displayOrder: parseInt(formDisplayOrder) || 0,
-        })
+        });
       } else {
         // Create new action
         const input: CreateActionInput = {
           name: formName.trim(),
           displayOrder: parseInt(formDisplayOrder) || 0,
-        }
-        await createNewAction(input)
+        };
+        await createNewAction(input);
       }
-      closeModal()
+      closeModal();
     } catch (err) {
-      console.error('Failed to save action:', err)
+      console.error('Failed to save action:', err);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Handle delete
   const handleDelete = async (actionId: string) => {
     try {
-      await removeAction(actionId)
-      setDeleteConfirm(null)
+      await removeAction(actionId);
+      setDeleteConfirm(null);
     } catch (err) {
-      console.error('Failed to delete action:', err)
+      console.error('Failed to delete action:', err);
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -106,7 +116,7 @@ export default function AdminActionsPage() {
           <Loader size="lg" />
         </div>
       </AuthenticatedLayout>
-    )
+    );
   }
 
   return (
@@ -114,15 +124,17 @@ export default function AdminActionsPage() {
       {/* Page Header */}
       <div className="border-b border-gray-200 bg-white">
         <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Action Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Action Management
+          </h1>
           <p className="mt-2 text-gray-600">
-            Manage actions that can be associated with items (e.g., "watch", "listen to", "visit")
+            Manage actions that can be associated with items (e.g.,
+            &quot;watch&quot;, &quot;listen to&quot;, &quot;visit&quot;)
           </p>
         </div>
       </div>
 
       <div className="container-custom py-8">
-
         {/* Error message */}
         {error && (
           <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800">
@@ -174,7 +186,10 @@ export default function AdminActionsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {actions.map((action) => (
-                    <tr key={action.id} className="hover:bg-gray-50 transition-colors">
+                    <tr
+                      key={action.id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
                       <td className="whitespace-nowrap px-6 py-4">
                         <div className="text-sm font-medium text-gray-900">
                           {action.name}
@@ -263,13 +278,18 @@ export default function AdminActionsPage() {
             />
 
             <p className="text-xs text-gray-500">
-              Lower numbers appear first. Actions will be used to describe what to do with items.
+              Lower numbers appear first. Actions will be used to describe what
+              to do with items.
             </p>
           </div>
 
           {/* Actions */}
           <div className="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4">
-            <Button variant="ghost" onClick={closeModal} disabled={isSubmitting}>
+            <Button
+              variant="ghost"
+              onClick={closeModal}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button
@@ -284,5 +304,5 @@ export default function AdminActionsPage() {
         </Modal>
       </div>
     </AuthenticatedLayout>
-  )
+  );
 }
