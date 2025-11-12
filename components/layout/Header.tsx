@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ListTodo, LogOut, Users } from 'lucide-react';
+import { ListTodo, LogOut, Users, Key } from 'lucide-react';
 import Container from './Container';
 import Button from '../ui/Button';
 import { isCurrentUserAdmin } from '@/lib/auth/client';
@@ -13,11 +13,13 @@ export interface HeaderProps {
 }
 
 export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
       isCurrentUserAdmin().then(setIsAdmin);
+    } else {
+      setIsAdmin(null);
     }
   }, [isAuthenticated]);
 
@@ -37,25 +39,21 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
           {/* Navigation */}
           {isAuthenticated && (
             <nav className="flex items-center gap-4">
-              <Link href="/account">
-                <Button variant="ghost" size="sm">
-                  Account
-                </Button>
-              </Link>
-              {isAdmin && (
+              {isAdmin === true && (
                 <Link href="/admin/users">
-                  <Button variant="ghost" size="sm" className="gap-2">
+                  <Button variant="ghost" size="sm">
                     <Users className="h-4 w-4" />
                     <span className="hidden sm:inline">Users</span>
                   </Button>
                 </Link>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onLogout}
-                className="gap-2"
-              >
+              <Link href="/account">
+                <Button variant="ghost" size="sm">
+                  <Key className="h-4 w-4" />
+                  <span className="hidden sm:inline">Account</span>
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={onLogout}>
                 <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Logout</span>
               </Button>
