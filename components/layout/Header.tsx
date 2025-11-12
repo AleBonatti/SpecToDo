@@ -15,15 +15,15 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
   const { isAdmin } = useUser();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
+    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur shadow-soft supports-backdrop-filter:bg-white/60">
       <Container>
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link
             href={isAuthenticated ? '/' : '/'}
-            className="flex items-center gap-2 font-semibold text-gray-900 hover:text-primary-600 transition-colors"
+            className="flex items-center gap-2 font-bold text-neutral-900 hover:text-primary-600 transition-colors"
           >
-            <ListTodo className="h-6 w-6" />
+            <ListTodo className="h-6 w-6 text-primary-600" />
             <span className="text-lg">FutureList</span>
           </Link>
 

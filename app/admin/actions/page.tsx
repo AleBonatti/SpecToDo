@@ -122,12 +122,12 @@ export default function AdminActionsPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-gray-900">
+      <div className="border-b border-neutral-200 bg-white shadow-soft">
+        <div className="container-custom py-8">
+          <h1 className="text-3xl font-bold text-neutral-900">
             Action Management
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-neutral-600">
             Manage actions that can be associated with items (e.g.,
             &quot;watch&quot;, &quot;listen to&quot;, &quot;visit&quot;)
           </p>
@@ -137,8 +137,8 @@ export default function AdminActionsPage() {
       <div className="container-custom py-8">
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800">
-            <p className="font-medium">Error: {error}</p>
+          <div className="mb-6 rounded-lg bg-danger-50 border border-danger-200 p-4 text-danger-800">
+            <p className="font-semibold">Error: {error}</p>
           </div>
         )}
 
@@ -165,40 +165,40 @@ export default function AdminActionsPage() {
             }}
           />
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-soft">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-neutral-200">
+                <thead className="bg-neutral-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700">
                       Display Order
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-700">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-neutral-200 bg-white">
                   {actions.map((action) => (
                     <tr
                       key={action.id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-neutral-50 transition-colors"
                     >
                       <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-semibold text-neutral-900">
                           {action.name}
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600">
                         {action.displayOrder}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600">
                         {new Date(action.createdAt).toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -235,7 +235,7 @@ export default function AdminActionsPage() {
                               size="sm"
                               icon={<Trash2 className="h-4 w-4" />}
                               onClick={() => setDeleteConfirm(action.id)}
-                              className="text-red-600 hover:text-red-700"
+                              className="text-danger-600 hover:text-danger-700 hover:bg-danger-50"
                             >
                               Delete
                             </Button>
@@ -277,14 +277,14 @@ export default function AdminActionsPage() {
               fullWidth
             />
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-neutral-500">
               Lower numbers appear first. Actions will be used to describe what
               to do with items.
             </p>
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4">
+          <div className="mt-6 flex justify-end gap-3 border-t border-neutral-200 pt-4">
             <Button
               variant="ghost"
               onClick={closeModal}
