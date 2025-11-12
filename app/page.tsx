@@ -15,7 +15,6 @@ import Textarea from '@/components/ui/Textarea';
 import Toggle from '@/components/ui/Toggle';
 import Modal from '@/components/ui/Modal';
 import Dialog from '@/components/ui/Dialog';
-import CategoryPicker from '@/components/ui/CategoryPicker';
 import MultiSelectCategoryFilter from '@/components/ui/MultiSelectCategoryFilter';
 import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
@@ -448,12 +447,16 @@ export default function HomePage() {
                 fullWidth
               />
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <CategoryPicker
-                  categories={categories}
-                  value={formCategory}
-                  onChange={setFormCategory}
+                <Select
                   label="Category"
+                  value={formCategory}
+                  onChange={(e) => setFormCategory(e.target.value)}
+                  options={[
+                    { value: '', label: 'Select a category...' },
+                    ...categories,
+                  ]}
                   required
+                  fullWidth
                 />
                 <Select
                   label="Action (optional)"
