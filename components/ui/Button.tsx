@@ -50,10 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            <span>Loading...</span>
-          </>
+          <Loader2 className="h-4 w-4 animate-spin" aria-label="Loading" />
         ) : (
           <>
             {icon && <span aria-hidden="true">{icon}</span>}

@@ -36,6 +36,7 @@ export default function AdminUsersPage() {
 
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Reset form
   const resetForm = () => {
@@ -111,10 +112,13 @@ export default function AdminUsersPage() {
   // Handle delete
   const handleDelete = async (userId: string) => {
     try {
+      setIsDeleting(true)
       await removeUser(userId)
       setDeleteConfirm(null)
     } catch (err) {
       console.error('Failed to delete user:', err)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -242,6 +246,8 @@ export default function AdminUsersPage() {
                                 variant="danger"
                                 size="sm"
                                 onClick={() => handleDelete(user.id)}
+                                loading={isDeleting}
+                                disabled={isDeleting}
                               >
                                 Confirm
                               </Button>
@@ -249,6 +255,7 @@ export default function AdminUsersPage() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setDeleteConfirm(null)}
+                                disabled={isDeleting}
                               >
                                 Cancel
                               </Button>

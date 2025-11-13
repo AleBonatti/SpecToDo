@@ -67,7 +67,7 @@ const Modal: React.FC<ModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="fixed inset-0 z-50 bg-neutral-900/60 backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
@@ -81,11 +81,11 @@ const Modal: React.FC<ModalProps> = ({
             aria-labelledby={title ? 'modal-title' : undefined}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{
-                duration: 0.3,
+                duration: 0.2,
                 ease: [0.16, 1, 0.3, 1], // Custom easing for smooth, springy feel
               }}
               className={cn(

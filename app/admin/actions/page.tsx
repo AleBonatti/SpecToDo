@@ -42,6 +42,7 @@ export default function AdminActionsPage() {
 
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Reset form
   const resetForm = () => {
@@ -102,10 +103,13 @@ export default function AdminActionsPage() {
   // Handle delete
   const handleDelete = async (actionId: string) => {
     try {
+      setIsDeleting(true);
       await removeAction(actionId);
       setDeleteConfirm(null);
     } catch (err) {
       console.error('Failed to delete action:', err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -218,6 +222,8 @@ export default function AdminActionsPage() {
                                 variant="danger"
                                 size="sm"
                                 onClick={() => handleDelete(action.id)}
+                                loading={isDeleting}
+                                disabled={isDeleting}
                               >
                                 Confirm
                               </Button>
@@ -225,6 +231,7 @@ export default function AdminActionsPage() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setDeleteConfirm(null)}
+                                disabled={isDeleting}
                               >
                                 Cancel
                               </Button>

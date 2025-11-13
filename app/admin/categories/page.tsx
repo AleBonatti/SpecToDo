@@ -41,6 +41,7 @@ export default function AdminCategoriesPage() {
 
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Reset form
   const resetForm = () => {
@@ -105,10 +106,13 @@ export default function AdminCategoriesPage() {
   // Handle delete
   const handleDelete = async (categoryId: string) => {
     try {
+      setIsDeleting(true)
       await removeCategory(categoryId)
       setDeleteConfirm(null)
     } catch (err) {
       console.error('Failed to delete category:', err)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -231,6 +235,8 @@ export default function AdminCategoriesPage() {
                                   variant="danger"
                                   size="sm"
                                   onClick={() => handleDelete(category.id)}
+                                  loading={isDeleting}
+                                  disabled={isDeleting}
                                 >
                                   Confirm
                                 </Button>
@@ -238,6 +244,7 @@ export default function AdminCategoriesPage() {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => setDeleteConfirm(null)}
+                                  disabled={isDeleting}
                                 >
                                   Cancel
                                 </Button>
