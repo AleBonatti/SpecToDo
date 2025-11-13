@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import React, { useEffect } from 'react'
-import { X } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import React, { useEffect } from 'react';
+import { X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export interface ModalProps {
-  open: boolean
-  onClose: () => void
-  title?: string
-  children: React.ReactNode
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
-  className?: string
-  showCloseButton?: boolean
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  className?: string;
+  showCloseButton?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -30,33 +30,33 @@ const Modal: React.FC<ModalProps> = ({
     lg: 'max-w-lg',
     xl: 'max-w-xl',
     full: 'max-w-full mx-4',
-  }
+  };
 
   // Close on Escape key
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose()
+        onClose();
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [open, onClose])
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [open, onClose]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = ''
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   return (
     <AnimatePresence>
@@ -86,7 +86,7 @@ const Modal: React.FC<ModalProps> = ({
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{
                 duration: 0.3,
-                ease: [0.16, 1, 0.3, 1] // Custom easing for smooth, springy feel
+                ease: [0.16, 1, 0.3, 1], // Custom easing for smooth, springy feel
               }}
               className={cn(
                 'relative w-full rounded-xl bg-white shadow-2xl border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800',
@@ -97,11 +97,11 @@ const Modal: React.FC<ModalProps> = ({
             >
               {/* Header */}
               {(title || showCloseButton) && (
-                <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-5">
+                <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-6 py-5">
                   {title && (
                     <h2
                       id="modal-title"
-                      className="text-xl font-bold text-neutral-900"
+                      className="text-xl font-bold text-neutral-900 dark:text-neutral-300"
                     >
                       {title}
                     </h2>
@@ -126,9 +126,9 @@ const Modal: React.FC<ModalProps> = ({
         </>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-Modal.displayName = 'Modal'
+Modal.displayName = 'Modal';
 
-export default Modal
+export default Modal;
