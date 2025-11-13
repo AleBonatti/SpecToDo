@@ -79,7 +79,7 @@ const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
                 'peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
                 hasError
                   ? 'bg-red-200 peer-checked:bg-red-600 dark:bg-red-900/30 dark:peer-checked:bg-red-600'
-                  : 'bg-slate-200 peer-checked:bg-sky-500 dark:bg-neutral-700 dark:peer-checked:bg-primary-500',
+                  : 'bg-slate-200 peer-checked:bg-sky-500 dark:bg-neutral-700 dark:peer-checked:bg-primary-600',
                 sizes[size].track,
                 className
               )}
@@ -121,7 +121,10 @@ const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
           </p>
         )}
         {!error && helperText && (
-          <p id={`${toggleId}-helper`} className="text-sm text-slate-500 dark:text-neutral-400">
+          <p
+            id={`${toggleId}-helper`}
+            className="text-sm text-slate-500 dark:text-neutral-400"
+          >
             {helperText}
           </p>
         )}
