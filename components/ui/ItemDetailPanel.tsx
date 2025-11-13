@@ -148,19 +148,11 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
                     icon={PriorityIcon}
                   />
                 )}
-                {item.done && (
-                  <Badge
-                    text="Completed"
-                    variant="success"
-                  />
-                )}
+                {item.done && <Badge text="Completed" variant="success" />}
               </div>
 
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
-                  Title
-                </label>
                 <h3 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
                   {item.action && (
                     <span className="text-lg font-normal text-accent-600 dark:text-accent-400 mr-2">
