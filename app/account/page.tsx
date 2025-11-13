@@ -143,10 +143,10 @@ export default function AccountPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-slate-200 bg-white">
+      <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-slate-900">Account Settings</h1>
-          <p className="mt-2 text-slate-600">Manage your profile and preferences</p>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Account Settings</h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">Manage your profile and preferences</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@ export default function AccountPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800"
+              className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
             >
               <div className="flex items-center gap-2">
                 <AlertCircle className="h-5 w-5" />
@@ -173,16 +173,16 @@ export default function AccountPage() {
           )}
 
           {/* Profile Section */}
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="mb-6 flex items-center gap-3">
-              <div className="rounded-lg bg-sky-100 p-2">
-                <User className="h-6 w-6 text-sky-600" />
+              <div className="rounded-lg bg-primary-100 p-2 dark:bg-primary-900/30">
+                <User className="h-6 w-6 text-primary-600 dark:text-primary-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                   Profile Information
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
                   Update your personal details
                 </p>
               </div>
@@ -192,7 +192,7 @@ export default function AccountPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800"
+                className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200"
               >
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5" />
@@ -236,16 +236,16 @@ export default function AccountPage() {
           </div>
 
           {/* Password Section */}
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="mb-6 flex items-center gap-3">
-              <div className="rounded-lg bg-amber-100 p-2">
-                <Lock className="h-6 w-6 text-amber-600" />
+              <div className="rounded-lg bg-amber-100 p-2 dark:bg-amber-900/30">
+                <Lock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                   Change Password
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
                   Update your account password
                 </p>
               </div>
@@ -255,7 +255,7 @@ export default function AccountPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800"
+                className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200"
               >
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5" />
@@ -270,7 +270,7 @@ export default function AccountPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800"
+                className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
               >
                 <div className="flex items-center gap-2">
                   <AlertCircle className="h-5 w-5" />
@@ -315,20 +315,20 @@ export default function AccountPage() {
 
           {/* Account Info */}
           {profile && (
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-semibold text-slate-900">
+            <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+              <h3 className="mb-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                 Account Information
               </h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-slate-600">User ID:</dt>
-                  <dd className="font-mono text-xs text-slate-900">
+                  <dt className="text-neutral-600 dark:text-neutral-400">User ID:</dt>
+                  <dd className="font-mono text-xs text-neutral-900 dark:text-neutral-100">
                     {profile.id}
                   </dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-slate-600">Member since:</dt>
-                  <dd className="text-slate-900">
+                  <dt className="text-neutral-600 dark:text-neutral-400">Member since:</dt>
+                  <dd className="text-neutral-900 dark:text-neutral-100">
                     {new Date(profile.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
