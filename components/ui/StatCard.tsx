@@ -26,22 +26,22 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   const variants = {
     primary: {
-      bg: 'bg-primary-50',
-      iconBg: 'bg-primary-100',
-      iconColor: 'text-primary-600',
-      textColor: 'text-primary-900',
+      bg: 'bg-primary-50 dark:bg-primary-950/30',
+      iconBg: 'bg-primary-100 dark:bg-primary-900/50',
+      iconColor: 'text-primary-600 dark:text-primary-400',
+      textColor: 'text-primary-900 dark:text-primary-300',
     },
     accent: {
-      bg: 'bg-accent-50',
-      iconBg: 'bg-accent-100',
-      iconColor: 'text-accent-600',
-      textColor: 'text-accent-900',
+      bg: 'bg-accent-50 dark:bg-accent-950/30',
+      iconBg: 'bg-accent-100 dark:bg-accent-900/50',
+      iconColor: 'text-accent-600 dark:text-accent-400',
+      textColor: 'text-accent-900 dark:text-accent-300',
     },
     success: {
-      bg: 'bg-success-50',
-      iconBg: 'bg-success-100',
-      iconColor: 'text-success-600',
-      textColor: 'text-success-900',
+      bg: 'bg-success-50 dark:bg-success-950/30',
+      iconBg: 'bg-success-100 dark:bg-success-900/50',
+      iconColor: 'text-success-600 dark:text-success-400',
+      textColor: 'text-success-900 dark:text-success-300',
     },
     neutral: {
       bg: 'bg-white dark:bg-neutral-900',
@@ -77,7 +77,9 @@ const StatCard: React.FC<StatCardProps> = ({
               <span
                 className={cn(
                   'text-sm font-medium',
-                  trend.isPositive ? 'text-success-600' : 'text-danger-600'
+                  trend.isPositive
+                    ? 'text-success-600 dark:text-success-400'
+                    : 'text-danger-600 dark:text-danger-400'
                 )}
               >
                 {trend.isPositive ? '+' : ''}
