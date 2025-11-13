@@ -26,16 +26,16 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-200 bg-neutral-50/50 py-16 px-6 text-center',
+        'flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-200 bg-neutral-50/50 py-16 px-6 text-center dark:border-neutral-800 dark:bg-neutral-900/50',
         className
       )}
     >
-      <div className="mb-6 animate-float rounded-full bg-linear-to-br from-primary-50 to-accent-50 p-6 shadow-lg">
-        <Icon className="h-16 w-16 text-primary-600" aria-hidden="true" />
+      <div className="mb-6 animate-float rounded-full bg-gradient-to-br from-primary-50 to-accent-50 p-6 shadow-lg dark:from-primary-950 dark:to-accent-950">
+        <Icon className="h-16 w-16 text-primary-600 dark:text-primary-400" aria-hidden="true" />
       </div>
-      <h3 className="mb-3 text-xl font-bold text-neutral-900">{title}</h3>
+      <h3 className="mb-3 text-xl font-bold text-neutral-900 dark:text-neutral-100">{title}</h3>
       {description && (
-        <p className="mb-8 max-w-md text-base text-neutral-600 text-balance">{description}</p>
+        <p className="mb-8 max-w-md text-base text-neutral-600 text-balance dark:text-neutral-400">{description}</p>
       )}
       {action && (
         <Button variant="primary" onClick={action.onClick} size="lg">

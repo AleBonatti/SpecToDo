@@ -32,10 +32,10 @@ const Dialog: React.FC<DialogProps> = ({
   children,
 }) => {
   const icons = {
-    info: <Info className="h-6 w-6 text-sky-500" />,
-    warning: <AlertTriangle className="h-6 w-6 text-amber-500" />,
-    success: <CheckCircle className="h-6 w-6 text-green-500" />,
-    error: <XCircle className="h-6 w-6 text-red-500" />,
+    info: <Info className="h-6 w-6 text-primary-500 dark:text-primary-400" />,
+    warning: <AlertTriangle className="h-6 w-6 text-amber-500 dark:text-amber-400" />,
+    success: <CheckCircle className="h-6 w-6 text-green-500 dark:text-green-400" />,
+    error: <XCircle className="h-6 w-6 text-red-500 dark:text-red-400" />,
   }
 
   const handleConfirm = () => {
@@ -53,7 +53,7 @@ const Dialog: React.FC<DialogProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm dark:bg-neutral-950/80"
+            className="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm dark:bg-neutral-950/80"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -84,14 +84,14 @@ const Dialog: React.FC<DialogProps> = ({
                 <div className="flex-1">
                   <h2
                     id="dialog-title"
-                    className="text-lg font-semibold text-slate-900 dark:text-neutral-100"
+                    className="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
                   >
                     {title}
                   </h2>
                   {description && (
                     <p
                       id="dialog-description"
-                      className="mt-2 text-sm text-slate-600 dark:text-neutral-400"
+                      className="mt-2 text-sm text-neutral-600 dark:text-neutral-400"
                     >
                       {description}
                     </p>

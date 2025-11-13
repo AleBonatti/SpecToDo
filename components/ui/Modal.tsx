@@ -110,7 +110,7 @@ const Modal: React.FC<ModalProps> = ({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="rounded-lg p-1.5 text-neutral-400 transition-all hover:bg-neutral-100 hover:text-neutral-700 hover:rotate-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
+                      className="rounded-lg p-1.5 text-neutral-400 transition-all hover:bg-neutral-100 hover:text-neutral-700 hover:rotate-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                       aria-label="Close modal"
                     >
                       <X className="h-5 w-5" />

@@ -125,10 +125,10 @@ export default function AdminCategoriesPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-gray-200 bg-white">
+      <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Category Management</h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             Manage categories for organizing items
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function AdminCategoriesPage() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800">
+          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-950 dark:text-red-200">
             <p className="font-medium">Error: {error}</p>
           </div>
         )}
@@ -166,33 +166,33 @@ export default function AdminCategoriesPage() {
             }}
           />
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+                <thead className="bg-neutral-50 dark:bg-neutral-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Display Order
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-neutral-200 bg-white dark:divide-neutral-800 dark:bg-neutral-900">
                   {categories.map((category) => (
-                    <tr key={category.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={category.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
                       <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                           {category.name}
                         </div>
                       </td>
@@ -200,17 +200,17 @@ export default function AdminCategoriesPage() {
                         <span
                           className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
                             category.type === 'default'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-800'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                              : 'bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300'
                           }`}
                         >
                           {category.type}
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                         {category.displayOrder}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                         {new Date(category.createdAt).toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">

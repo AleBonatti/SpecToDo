@@ -131,10 +131,10 @@ export default function AdminUsersPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-gray-200 bg-white">
+      <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">User Management</h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             Manage user accounts and roles
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function AdminUsersPage() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800">
+          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-950 dark:text-red-200">
             <p className="font-medium">Error: {error}</p>
           </div>
         )}
@@ -172,37 +172,37 @@ export default function AdminUsersPage() {
             }}
           />
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+                <thead className="bg-neutral-50 dark:bg-neutral-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       User
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-neutral-200 bg-white dark:divide-neutral-800 dark:bg-neutral-900">
                   {users.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={user.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
                       <td className="whitespace-nowrap px-6 py-4">
                         <div className="text-sm">
                           {user.fullName && (
-                            <div className="font-medium text-gray-900">
+                            <div className="font-medium text-neutral-900 dark:text-neutral-100">
                               {user.fullName}
                             </div>
                           )}
-                          <div className={user.fullName ? "text-gray-500" : "font-medium text-gray-900"}>
-                            {user.email || <span className="font-mono text-xs text-gray-400">{user.id}</span>}
+                          <div className={user.fullName ? "text-neutral-500 dark:text-neutral-400" : "font-medium text-neutral-900 dark:text-neutral-100"}>
+                            {user.email || <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500">{user.id}</span>}
                           </div>
                         </div>
                       </td>
@@ -210,8 +210,8 @@ export default function AdminUsersPage() {
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
                             user.role === USER_ROLES.ADMIN
-                              ? 'bg-purple-100 text-purple-800'
-                              : 'bg-gray-100 text-gray-800'
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                              : 'bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300'
                           }`}
                         >
                           {user.role === USER_ROLES.ADMIN ? (
@@ -222,7 +222,7 @@ export default function AdminUsersPage() {
                           {user.role}
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -326,9 +326,9 @@ export default function AdminUsersPage() {
                   fullWidth
                 />
 
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="text-sm text-gray-600">
-                    Email: <span className="font-medium text-gray-900">{editingUser.email || <span className="font-mono text-xs text-gray-400">{editingUser.id}</span>}</span>
+                <div className="rounded-lg bg-neutral-50 p-4 dark:bg-neutral-800">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Email: <span className="font-medium text-neutral-900 dark:text-neutral-100">{editingUser.email || <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500">{editingUser.id}</span>}</span>
                   </p>
                 </div>
               </>
@@ -348,7 +348,7 @@ export default function AdminUsersPage() {
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4">
+          <div className="mt-6 flex justify-end gap-3 border-t border-neutral-200 pt-4 dark:border-neutral-800">
             <Button variant="ghost" onClick={closeModal} disabled={isSubmitting}>
               Cancel
             </Button>

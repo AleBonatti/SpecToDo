@@ -75,11 +75,11 @@ const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
               htmlFor={toggleId}
               className={cn(
                 'flex cursor-pointer items-center rounded-full transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                 'peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
                 hasError
                   ? 'bg-red-200 peer-checked:bg-red-600 dark:bg-red-900/30 dark:peer-checked:bg-red-600'
-                  : 'bg-slate-200 peer-checked:bg-sky-500 dark:bg-neutral-700 dark:peer-checked:bg-primary-600',
+                  : 'bg-neutral-200 peer-checked:bg-primary-500 dark:bg-neutral-700 dark:peer-checked:bg-primary-600',
                 sizes[size].track,
                 className
               )}
@@ -98,7 +98,7 @@ const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
             <label
               htmlFor={toggleId}
               className={cn(
-                'cursor-pointer text-sm font-medium text-slate-700 dark:text-neutral-300',
+                'cursor-pointer text-sm font-medium text-neutral-700 dark:text-neutral-300',
                 disabled && 'cursor-not-allowed opacity-50'
               )}
             >
@@ -123,7 +123,7 @@ const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
         {!error && helperText && (
           <p
             id={`${toggleId}-helper`}
-            className="text-sm text-slate-500 dark:text-neutral-400"
+            className="text-sm text-neutral-500 dark:text-neutral-400"
           >
             {helperText}
           </p>
