@@ -152,20 +152,20 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4 py-12 dark:bg-neutral-950 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="w-full max-w-md"
       >
-        <div className="rounded-lg border border-slate-200 bg-white px-8 py-10 shadow-sm">
+        <div className="rounded-lg border border-neutral-200 bg-white px-8 py-10 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
               Create an account
             </h1>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
               Start tracking your future wishlist items
             </p>
           </div>
@@ -266,11 +266,11 @@ export default function SignupPage() {
 
           {/* Login link */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
               Already have an account?{' '}
               <Link
                 href="/auth/login"
-                className="font-medium text-sky-600 transition-colors hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
+                className="font-medium text-primary-600 transition-colors hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300"
               >
                 Log in
               </Link>

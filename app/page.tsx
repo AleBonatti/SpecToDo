@@ -9,6 +9,9 @@ import { useActions } from '@/lib/hooks/useActions';
 import { useItemStats } from '@/lib/hooks/useItemStats';
 import { useItemActions } from '@/lib/hooks/useItemActions';
 import { useItemFilters } from '@/lib/hooks/useItemFilters';
+import { useKeyboardShortcut } from '@/lib/hooks/useKeyboardShortcut';
+import { useBulkSelection } from '@/lib/hooks/useBulkSelection';
+import { useToast } from '@/lib/hooks/useToast';
 import { getCategoryLabel, getCategoryIcon, getActionLabel } from '@/lib/utils/item-helpers';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -19,9 +22,12 @@ import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
 import ListItem from '@/components/ui/ListItem';
 import ItemDetailPanel from '@/components/ui/ItemDetailPanel';
-import Loader from '@/components/ui/Loader';
+import ListItemSkeleton from '@/components/ui/ListItemSkeleton';
+import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp';
 import ItemStats from '@/components/features/ItemStats';
 import ItemFilters from '@/components/features/ItemFilters';
+import BulkActionsToolbar from '@/components/features/BulkActionsToolbar';
+import QuickAddWidget from '@/components/features/QuickAddWidget';
 import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
 
 export default function HomePage() {
@@ -85,6 +91,91 @@ export default function HomePage() {
   // Calculate stats
   const stats = useItemStats(allItems);
 
+  // Toast notifications
+  const toast = useToast();
+
+  // Bulk selection
+  const bulkSelection = useBulkSelection(filteredItems);
+
+  // Keyboard shortcuts
+  useKeyboardShortcut(itemActions.openAddModal, {
+    key: 'n',
+    meta: true, // Cmd+N on Mac, Win+N on Windows
+    enabled: !itemActions.isModalOpen && !bulkSelection.isSelectionMode,
+  });
+
+  useKeyboardShortcut(() => setHideDone(!hideDone), {
+    key: 'h',
+    meta: true, // Cmd+H on Mac, Win+H on Windows
+    enabled: !itemActions.isModalOpen && !bulkSelection.isSelectionMode,
+  });
+
+  useKeyboardShortcut(bulkSelection.toggleSelectionMode, {
+    key: 's',
+    meta: true, // Cmd+S on Mac, Win+S on Windows
+    enabled: !itemActions.isModalOpen,
+    preventDefault: true,
+  });
+
+  // Bulk actions handlers
+  const handleBulkMarkAsDone = async () => {
+    try {
+      await Promise.all(
+        bulkSelection.selectedItems.map((item) =>
+          updateExistingItem(item.id, { status: 'done' })
+        )
+      );
+      toast.success(`Marked ${bulkSelection.selectedCount} items as done`);
+      bulkSelection.clearSelection();
+    } catch (error) {
+      toast.error('Failed to update items');
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    try {
+      await Promise.all(
+        bulkSelection.selectedItems.map((item) => deleteExistingItem(item.id))
+      );
+      toast.success(`Deleted ${bulkSelection.selectedCount} items`);
+      bulkSelection.clearSelection();
+      bulkSelection.toggleSelectionMode();
+    } catch (error) {
+      toast.error('Failed to delete items');
+    }
+  };
+
+  const handleBulkChangeCategory = async (newCategoryId: string) => {
+    try {
+      // Use fetch API directly since UpdateItemInput doesn't include categoryId
+      await Promise.all(
+        bulkSelection.selectedItems.map(async (item) => {
+          const response = await fetch(`/api/items/${item.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category_id: newCategoryId }),
+          });
+          if (!response.ok) throw new Error('Failed to update');
+        })
+      );
+      toast.success(`Changed category for ${bulkSelection.selectedCount} items`);
+      bulkSelection.clearSelection();
+      // Refresh items to show new categories
+      window.location.reload();
+    } catch (error) {
+      toast.error('Failed to change category');
+    }
+  };
+
+  // Quick add handler
+  const handleQuickAdd = async (data: { title: string; categoryId: string }) => {
+    await createNewItem({
+      ...data,
+      status: 'todo',
+    });
+    toast.success('Item added successfully');
+  };
+
   return (
     <AuthenticatedLayout>
       {/* Main content */}
@@ -105,9 +196,17 @@ export default function HomePage() {
 
         {/* Loading state */}
         {loading || categoriesLoading || actionsLoading ? (
-          <div className="flex min-h-[400px] items-center justify-center">
-            <Loader size="lg" text="Loading..." />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ListItemSkeleton key={index} />
+              ))}
+            </div>
+          </motion.div>
         ) : categoriesError || actionsError ? (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -144,7 +243,17 @@ export default function HomePage() {
                 selectedPriorities={selectedPriorities}
                 onPriorityChange={setSelectedPriorities}
                 onAddClick={itemActions.openAddModal}
+                selectionMode={bulkSelection.isSelectionMode}
+                onToggleSelectionMode={bulkSelection.toggleSelectionMode}
               />
+
+              {/* Quick Add Widget */}
+              {!bulkSelection.isSelectionMode && (
+                <QuickAddWidget
+                  onAdd={handleQuickAdd}
+                  categories={categories}
+                />
+              )}
 
               {/* Items list or empty state */}
               {filteredItems.length === 0 ? (
@@ -195,6 +304,9 @@ export default function HomePage() {
                           priority={item.priority}
                           onClick={itemActions.handleItemClick}
                           onToggleDone={itemActions.handleToggleDone}
+                          selectionMode={bulkSelection.isSelectionMode}
+                          selected={bulkSelection.isSelected(item.id)}
+                          onSelectionChange={bulkSelection.toggleItemSelection}
                         />
                       </motion.div>
                     ))}
@@ -213,8 +325,8 @@ export default function HomePage() {
         title={itemActions.editingItem ? 'Edit Item' : 'Add New Item'}
         size="lg"
       >
-        <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
-          <div className="space-y-4 px-1">
+        <div className="max-h-[calc(100vh-16rem)] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-neutral-100 [&::-webkit-scrollbar-thumb]:bg-neutral-300 [&::-webkit-scrollbar-thumb]:rounded-full dark:[&::-webkit-scrollbar-track]:bg-neutral-900 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700">
+          <div className="space-y-4 px-1 pb-2">
             {/* Basic Info */}
             <div className="space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -388,6 +500,21 @@ export default function HomePage() {
         onEdit={itemActions.handleEditFromPanel}
         onDelete={itemActions.handleDeleteFromPanel}
       />
+
+      {/* Keyboard shortcuts help */}
+      <KeyboardShortcutsHelp />
+
+      {/* Bulk Actions Toolbar */}
+      {bulkSelection.isSelectionMode && bulkSelection.selectedCount > 0 && (
+        <BulkActionsToolbar
+          selectedCount={bulkSelection.selectedCount}
+          onClose={bulkSelection.clearSelection}
+          onMarkAsDone={handleBulkMarkAsDone}
+          onDelete={handleBulkDelete}
+          onChangeCategory={handleBulkChangeCategory}
+          categories={categories}
+        />
+      )}
     </AuthenticatedLayout>
   );
 }

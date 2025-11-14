@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import FocusTrap from 'focus-trap-react';
 import { cn } from '@/lib/utils';
 
 export interface ModalProps {
@@ -74,27 +75,36 @@ const Modal: React.FC<ModalProps> = ({
           />
 
           {/* Modal */}
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={title ? 'modal-title' : undefined}
+          <FocusTrap
+            active={open}
+            focusTrapOptions={{
+              initialFocus: false,
+              allowOutsideClick: true,
+              clickOutsideDeactivates: true,
+              returnFocusOnDeactivate: true,
+            }}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{
-                duration: 0.2,
-                ease: [0.16, 1, 0.3, 1], // Custom easing for smooth, springy feel
-              }}
-              className={cn(
-                'relative w-full rounded-xl bg-white shadow-2xl border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800',
-                sizes[size],
-                className
-              )}
-              onClick={(e) => e.stopPropagation()}
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? 'modal-title' : undefined}
             >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                transition={{
+                  duration: 0.2,
+                  ease: [0.16, 1, 0.3, 1], // Custom easing for smooth, springy feel
+                }}
+                className={cn(
+                  'relative w-full rounded-xl bg-white shadow-2xl border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800',
+                  sizes[size],
+                  className
+                )}
+                onClick={(e) => e.stopPropagation()}
+              >
               {/* Header */}
               {(title || showCloseButton) && (
                 <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-6 py-5">
@@ -123,6 +133,7 @@ const Modal: React.FC<ModalProps> = ({
               <div className="px-6 py-4">{children}</div>
             </motion.div>
           </div>
+        </FocusTrap>
         </>
       )}
     </AnimatePresence>

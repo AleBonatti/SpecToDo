@@ -40,8 +40,15 @@ export default function AuthenticatedLayout({ children }: AuthenticatedLayoutPro
   return (
     <UserProvider>
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+        {/* Skip to main content link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:bg-primary-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:bg-primary-500"
+        >
+          Skip to main content
+        </a>
         <Header isAuthenticated={true} onLogout={handleLogout} />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
       </div>
     </UserProvider>
   )
