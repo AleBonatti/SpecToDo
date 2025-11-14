@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import FocusTrap from 'focus-trap-react';
 import {
   X,
   Edit2,
@@ -105,16 +106,25 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
           />
 
           {/* Panel */}
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 z-50 h-full w-full max-w-2xl overflow-y-auto border-l border-neutral-200 bg-white shadow-2xl dark:border-neutral-800 dark:bg-neutral-900"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="panel-title"
+          <FocusTrap
+            active={open}
+            focusTrapOptions={{
+              initialFocus: false,
+              allowOutsideClick: true,
+              clickOutsideDeactivates: true,
+              returnFocusOnDeactivate: true,
+            }}
           >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="fixed right-0 top-0 z-50 h-full w-full max-w-2xl overflow-y-auto border-l border-neutral-200 bg-white shadow-2xl dark:border-neutral-800 dark:bg-neutral-900"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="panel-title"
+            >
             {/* Header */}
             <div className="sticky top-0 z-10 border-b border-neutral-200 bg-white/95 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-900/95">
               <div className="flex items-center justify-between p-6">
@@ -284,6 +294,7 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
               </div>
             </div>
           </motion.div>
+        </FocusTrap>
         </>
       )}
     </AnimatePresence>
