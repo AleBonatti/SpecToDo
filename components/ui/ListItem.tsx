@@ -24,6 +24,9 @@ export interface ListItemProps {
   onClick: (id: string) => void;
   onToggleDone: (id: string, done: boolean) => void;
   className?: string;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onSelectionChange?: (id: string) => void;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
@@ -38,6 +41,9 @@ const ListItem: React.FC<ListItemProps> = ({
   onClick,
   onToggleDone,
   className,
+  selectionMode = false,
+  selected = false,
+  onSelectionChange,
 }) => {
   // Priority configuration
   const priorityConfig = {
@@ -66,11 +72,19 @@ const ListItem: React.FC<ListItemProps> = ({
 
   return (
     <div
-      onClick={() => onClick(id)}
+      onClick={(e) => {
+        if (selectionMode && onSelectionChange) {
+          e.stopPropagation();
+          onSelectionChange(id);
+        } else {
+          onClick(id);
+        }
+      }}
       className={cn(
         'group relative rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer dark:border-neutral-800 dark:bg-neutral-900',
         done && 'opacity-70',
         priorityStyle?.borderColor,
+        selected && 'ring-2 ring-primary-500 border-primary-500',
         className
       )}
       role="button"
@@ -78,12 +92,35 @@ const ListItem: React.FC<ListItemProps> = ({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onClick(id);
+          if (selectionMode && onSelectionChange) {
+            onSelectionChange(id);
+          } else {
+            onClick(id);
+          }
         }
       }}
     >
+      {/* Selection checkbox */}
+      {selectionMode && (
+        <div className="absolute top-3 left-3 z-10 flex items-center justify-center p-1.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selected}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onChange={(e) => {
+              e.stopPropagation();
+              onSelectionChange?.(id);
+            }}
+            className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-0 focus:ring-offset-0 dark:border-neutral-600 cursor-pointer"
+            aria-label={`Select ${title}`}
+          />
+        </div>
+      )}
+
       {/* Top section: Category icon, priority badge, and done toggle */}
-      <div className="mb-3 flex items-start justify-between gap-2">
+      <div className={cn('mb-3 flex items-start justify-between gap-2', selectionMode && 'pl-8')}>
         <div className="flex flex-wrap items-center gap-2">
           {(() => {
             const CategoryIcon = getIconComponent(categoryIcon);
