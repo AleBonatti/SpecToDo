@@ -19,7 +19,7 @@ import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
 import ListItem from '@/components/ui/ListItem';
 import ItemDetailPanel from '@/components/ui/ItemDetailPanel';
-import Loader from '@/components/ui/Loader';
+import ListItemSkeleton from '@/components/ui/ListItemSkeleton';
 import ItemStats from '@/components/features/ItemStats';
 import ItemFilters from '@/components/features/ItemFilters';
 import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
@@ -105,9 +105,17 @@ export default function HomePage() {
 
         {/* Loading state */}
         {loading || categoriesLoading || actionsLoading ? (
-          <div className="flex min-h-[400px] items-center justify-center">
-            <Loader size="lg" text="Loading..." />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ListItemSkeleton key={index} />
+              ))}
+            </div>
+          </motion.div>
         ) : categoriesError || actionsError ? (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -213,8 +221,8 @@ export default function HomePage() {
         title={itemActions.editingItem ? 'Edit Item' : 'Add New Item'}
         size="lg"
       >
-        <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
-          <div className="space-y-4 px-1">
+        <div className="max-h-[calc(100vh-16rem)] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-neutral-100 [&::-webkit-scrollbar-thumb]:bg-neutral-300 [&::-webkit-scrollbar-thumb]:rounded-full dark:[&::-webkit-scrollbar-track]:bg-neutral-900 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700">
+          <div className="space-y-4 px-1 pb-2">
             {/* Basic Info */}
             <div className="space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
