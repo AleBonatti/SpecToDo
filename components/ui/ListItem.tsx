@@ -1,20 +1,27 @@
 'use client';
 
 import React from 'react';
-import { Edit2, Trash2, Check, Circle, AlertCircle, ArrowUp } from 'lucide-react';
+import {
+  Check,
+  Circle,
+  AlertCircle,
+  ArrowUp,
+  Package,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getIconComponent } from '@/lib/utils/icon-utils';
+import Badge from './Badge';
 
 export interface ListItemProps {
   id: string;
   title: string;
   action?: string | null;
   category: string;
-  categoryColor?: string;
+  categoryIcon?: string | null;
   done: boolean;
   description?: string;
   priority?: 'low' | 'medium' | 'high' | null;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+  onClick: (id: string) => void;
   onToggleDone: (id: string, done: boolean) => void;
   className?: string;
 }
@@ -24,12 +31,11 @@ const ListItem: React.FC<ListItemProps> = ({
   title,
   action,
   category,
-  categoryColor,
+  categoryIcon,
   done,
   description,
   priority,
-  onEdit,
-  onDelete,
+  onClick,
   onToggleDone,
   className,
 }) => {
@@ -39,19 +45,19 @@ const ListItem: React.FC<ListItemProps> = ({
       icon: AlertCircle,
       badge: 'badge-danger',
       label: 'High',
-      borderColor: 'border-l-4 border-l-danger-500',
+      borderColor: 'border-l-4 border-l-danger-500 dark:border-l-danger-400',
     },
     medium: {
       icon: ArrowUp,
       badge: 'badge-accent',
       label: 'Medium',
-      borderColor: 'border-l-4 border-l-accent-500',
+      borderColor: 'border-l-4 border-l-accent-500 dark:border-l-accent-400',
     },
     low: {
       icon: Circle,
-      badge: 'bg-neutral-100 text-neutral-600',
+      badge: 'bg-success-100 text-success-600',
       label: 'Low',
-      borderColor: 'border-l-4 border-l-neutral-300',
+      borderColor: 'border-l-4 border-l-success-300 dark:border-l-success-600',
     },
   };
 
@@ -60,36 +66,57 @@ const ListItem: React.FC<ListItemProps> = ({
 
   return (
     <div
+      onClick={() => onClick(id)}
       className={cn(
-        'group relative rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5',
+        'group relative rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer dark:border-neutral-800 dark:bg-neutral-900',
         done && 'opacity-70',
         priorityStyle?.borderColor,
         className
       )}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(id);
+        }
+      }}
     >
-      {/* Top section: Category badge, priority badge, and done toggle */}
+      {/* Top section: Category icon, priority badge, and done toggle */}
       <div className="mb-3 flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={cn(
-              'badge',
-              categoryColor
-                ? 'badge-primary'
-                : 'bg-neutral-100 text-neutral-700'
-            )}
-          >
-            {category}
-          </span>
+          {(() => {
+            const CategoryIcon = getIconComponent(categoryIcon);
+            const IconComponent = CategoryIcon || Package;
+            return (
+              <div className="flex items-center gap-1.5 rounded-md bg-primary-50 px-2 py-1 dark:bg-primary-900/20">
+                <IconComponent className="h-4 w-4 text-primary-600 dark:text-primary-400" />
+                <span className="text-xs font-medium text-primary-700 dark:text-primary-300">
+                  {category}
+                </span>
+              </div>
+            );
+          })()}
           {priority && priorityStyle && (
-            <span className={cn('badge inline-flex items-center gap-1', priorityStyle.badge)}>
-              {PriorityIcon && <PriorityIcon className="h-3 w-3" />}
-              {priorityStyle.label}
-            </span>
+            <Badge
+              text={priorityStyle.label}
+              variant={
+                priority === 'high'
+                  ? 'danger'
+                  : priority === 'medium'
+                    ? 'accent'
+                    : 'neutral'
+              }
+              icon={PriorityIcon}
+            />
           )}
         </div>
         <button
           type="button"
-          onClick={() => onToggleDone(id, !done)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleDone(id, !done);
+          }}
           className={cn(
             'flex-0 rounded-full p-1 transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
@@ -110,52 +137,23 @@ const ListItem: React.FC<ListItemProps> = ({
       {/* Title with optional action */}
       <h3
         className={cn(
-          'mb-2 text-base font-semibold text-neutral-900',
-          done && 'line-through'
+          'mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100'
         )}
       >
         {action && (
-          <span className="mr-1.5 text-sm font-normal text-accent-600">
+          <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
             {action}
           </span>
         )}
-        {title}
+        <span className={cn(done && 'line-through')}>{title}</span>
       </h3>
 
       {/* Description (if exists) */}
       {description && (
-        <p className="mb-3 line-clamp-2 text-sm text-neutral-600">
+        <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
           {description}
         </p>
       )}
-
-      {/* Action buttons */}
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => onEdit(id)}
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
-            'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
-          )}
-        >
-          <Edit2 className="h-3.5 w-3.5" aria-hidden="true" />
-          Edit
-        </button>
-        <button
-          type="button"
-          onClick={() => onDelete(id)}
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
-            'text-danger-600 hover:bg-danger-50 hover:text-danger-700',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
-          )}
-        >
-          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-          Delete
-        </button>
-      </div>
     </div>
   );
 };

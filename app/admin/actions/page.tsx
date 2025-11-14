@@ -42,6 +42,7 @@ export default function AdminActionsPage() {
 
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Reset form
   const resetForm = () => {
@@ -102,10 +103,13 @@ export default function AdminActionsPage() {
   // Handle delete
   const handleDelete = async (actionId: string) => {
     try {
+      setIsDeleting(true);
       await removeAction(actionId);
       setDeleteConfirm(null);
     } catch (err) {
       console.error('Failed to delete action:', err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -122,12 +126,12 @@ export default function AdminActionsPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-neutral-200 bg-white shadow-sm">
+      <div className="border-b border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <div className="container-custom py-8">
-          <h1 className="text-3xl font-bold text-neutral-900">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
             Action Management
           </h1>
-          <p className="mt-2 text-neutral-600">
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             Manage actions that can be associated with items (e.g.,
             &quot;watch&quot;, &quot;listen to&quot;, &quot;visit&quot;)
           </p>
@@ -137,7 +141,7 @@ export default function AdminActionsPage() {
       <div className="container-custom py-8">
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-lg bg-danger-50 border border-danger-200 p-4 text-danger-800">
+          <div className="mb-6 rounded-lg bg-danger-50 border border-danger-200 p-4 text-danger-800 dark:bg-danger-950 dark:border-danger-800 dark:text-danger-200">
             <p className="font-semibold">Error: {error}</p>
           </div>
         )}
@@ -165,40 +169,40 @@ export default function AdminActionsPage() {
             }}
           />
         ) : (
-          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-neutral-200">
-                <thead className="bg-neutral-50">
+              <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+                <thead className="bg-neutral-50 dark:bg-neutral-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
                       Display Order
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-200 bg-white">
+                <tbody className="divide-y divide-neutral-200 bg-white dark:divide-neutral-800 dark:bg-neutral-900">
                   {actions.map((action) => (
                     <tr
                       key={action.id}
-                      className="hover:bg-neutral-50 transition-colors"
+                      className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
                     >
                       <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm font-semibold text-neutral-900">
+                        <div className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                           {action.name}
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600 dark:text-neutral-400">
                         {action.displayOrder}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600 dark:text-neutral-400">
                         {new Date(action.createdAt).toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -218,6 +222,8 @@ export default function AdminActionsPage() {
                                 variant="danger"
                                 size="sm"
                                 onClick={() => handleDelete(action.id)}
+                                loading={isDeleting}
+                                disabled={isDeleting}
                               >
                                 Confirm
                               </Button>
@@ -225,6 +231,7 @@ export default function AdminActionsPage() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setDeleteConfirm(null)}
+                                disabled={isDeleting}
                               >
                                 Cancel
                               </Button>
@@ -235,7 +242,7 @@ export default function AdminActionsPage() {
                               size="sm"
                               icon={<Trash2 className="h-4 w-4" />}
                               onClick={() => setDeleteConfirm(action.id)}
-                              className="text-danger-600 hover:text-danger-700 hover:bg-danger-50"
+                              className="text-danger-600 hover:text-danger-700 hover:bg-danger-50 dark:text-danger-400 dark:hover:text-danger-300 dark:hover:bg-danger-950"
                             >
                               Delete
                             </Button>

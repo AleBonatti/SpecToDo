@@ -75,8 +75,9 @@ export async function PATCH(
 
     // Parse request body
     const body = await request.json()
-    const { name, type, displayOrder } = body as {
+    const { name, icon, type, displayOrder } = body as {
       name?: string
+      icon?: string | null
       type?: 'default' | 'custom'
       displayOrder?: number
     }
@@ -94,6 +95,10 @@ export async function PATCH(
         )
       }
       updateData.name = name.trim()
+    }
+
+    if (icon !== undefined) {
+      updateData.icon = icon
     }
 
     if (type !== undefined) {

@@ -54,8 +54,9 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json()
-    const { name, type = 'custom', displayOrder = 0 } = body as {
+    const { name, icon, type = 'custom', displayOrder = 0 } = body as {
       name: string
+      icon?: string | null
       type?: 'default' | 'custom'
       displayOrder?: number
     }
@@ -74,6 +75,7 @@ export async function POST(request: NextRequest) {
       .insert(categories)
       .values({
         name: name.trim(),
+        icon: icon || null,
         type,
         displayOrder,
       })

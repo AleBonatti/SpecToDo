@@ -37,11 +37,11 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     const hasError = !!error
 
     const baseStyles =
-      'block w-full appearance-none rounded-lg border bg-white pr-10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+      'block w-full appearance-none rounded-lg border bg-white pr-10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-900 dark:focus-visible:ring-primary-500'
 
     const stateStyles = hasError
-      ? 'border-red-500 text-red-900 focus-visible:ring-red-500'
-      : 'border-slate-300 text-slate-900 hover:border-slate-400 focus-visible:border-sky-500'
+      ? 'border-red-500 text-red-900 focus-visible:ring-red-500 dark:border-red-400 dark:text-red-100'
+      : 'border-neutral-300 text-neutral-900 hover:border-neutral-400 focus-visible:border-primary-500 dark:border-neutral-700 dark:text-neutral-100'
 
     const sizes = {
       sm: 'h-9 px-3 text-sm',
@@ -55,7 +55,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           <label
             htmlFor={selectId}
             className={cn(
-              'text-sm font-medium text-slate-700',
+              'text-sm font-medium text-neutral-700 dark:text-neutral-300',
               disabled && 'opacity-50'
             )}
           >
@@ -96,7 +96,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             ))}
           </select>
           <ChevronDown
-            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400 dark:text-neutral-500"
             aria-hidden="true"
           />
         </div>
@@ -112,7 +112,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {!error && helperText && (
           <p
             id={`${selectId}-helper`}
-            className="text-sm text-slate-500"
+            className="text-sm text-neutral-500 dark:text-neutral-400"
           >
             {helperText}
           </p>

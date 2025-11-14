@@ -13,6 +13,7 @@ import Button from '@/components/ui/Button'
 import Modal from '@/components/ui/Modal'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
+import IconPicker from '@/components/ui/IconPicker'
 import Loader from '@/components/ui/Loader'
 import EmptyState from '@/components/ui/EmptyState'
 import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
@@ -36,15 +37,18 @@ export default function AdminCategoriesPage() {
 
   // Form state
   const [formName, setFormName] = useState('')
+  const [formIcon, setFormIcon] = useState<string>('')
   const [formType, setFormType] = useState<CategoryType>(CATEGORY_TYPES.CUSTOM)
   const [formDisplayOrder, setFormDisplayOrder] = useState('0')
 
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Reset form
   const resetForm = () => {
     setFormName('')
+    setFormIcon('')
     setFormType(CATEGORY_TYPES.CUSTOM)
     setFormDisplayOrder('0')
     setEditingCategory(null)
@@ -60,6 +64,7 @@ export default function AdminCategoriesPage() {
   const openEditModal = (category: AdminCategory) => {
     setEditingCategory(category)
     setFormName(category.name)
+    setFormIcon(category.icon || '')
     setFormType(category.type as CategoryType)
     setFormDisplayOrder(category.displayOrder.toString())
     setIsModalOpen(true)
@@ -82,6 +87,7 @@ export default function AdminCategoriesPage() {
         // Update existing category
         await updateCategory(editingCategory.id, {
           name: formName.trim(),
+          icon: formIcon || null,
           type: formType,
           displayOrder: parseInt(formDisplayOrder) || 0,
         })
@@ -89,6 +95,7 @@ export default function AdminCategoriesPage() {
         // Create new category
         const input: CreateCategoryInput = {
           name: formName.trim(),
+          icon: formIcon || null,
           type: formType,
           displayOrder: parseInt(formDisplayOrder) || 0,
         }
@@ -105,10 +112,13 @@ export default function AdminCategoriesPage() {
   // Handle delete
   const handleDelete = async (categoryId: string) => {
     try {
+      setIsDeleting(true)
       await removeCategory(categoryId)
       setDeleteConfirm(null)
     } catch (err) {
       console.error('Failed to delete category:', err)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -125,10 +135,10 @@ export default function AdminCategoriesPage() {
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
-      <div className="border-b border-gray-200 bg-white">
+      <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Category Management</h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             Manage categories for organizing items
           </p>
         </div>
@@ -138,7 +148,7 @@ export default function AdminCategoriesPage() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800">
+          <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-950 dark:text-red-200">
             <p className="font-medium">Error: {error}</p>
           </div>
         )}
@@ -166,33 +176,33 @@ export default function AdminCategoriesPage() {
             }}
           />
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+                <thead className="bg-neutral-50 dark:bg-neutral-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Display Order
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-neutral-200 bg-white dark:divide-neutral-800 dark:bg-neutral-900">
                   {categories.map((category) => (
-                    <tr key={category.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={category.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
                       <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                           {category.name}
                         </div>
                       </td>
@@ -200,17 +210,17 @@ export default function AdminCategoriesPage() {
                         <span
                           className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
                             category.type === 'default'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-800'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                              : 'bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300'
                           }`}
                         >
                           {category.type}
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                         {category.displayOrder}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                         {new Date(category.createdAt).toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -231,6 +241,8 @@ export default function AdminCategoriesPage() {
                                   variant="danger"
                                   size="sm"
                                   onClick={() => handleDelete(category.id)}
+                                  loading={isDeleting}
+                                  disabled={isDeleting}
                                 >
                                   Confirm
                                 </Button>
@@ -238,6 +250,7 @@ export default function AdminCategoriesPage() {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => setDeleteConfirm(null)}
+                                  disabled={isDeleting}
                                 >
                                   Cancel
                                 </Button>
@@ -282,6 +295,12 @@ export default function AdminCategoriesPage() {
               fullWidth
             />
 
+            <IconPicker
+              label="Icon"
+              value={formIcon}
+              onChange={setFormIcon}
+            />
+
             <Select
               label="Type"
               value={formType}
@@ -303,7 +322,7 @@ export default function AdminCategoriesPage() {
               fullWidth
             />
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Lower numbers appear first. Default categories cannot be deleted.
             </p>
           </div>

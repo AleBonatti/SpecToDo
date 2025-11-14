@@ -1,39 +1,31 @@
 'use client';
 
-import React from 'react';
-import { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Inbox,
-  Plus,
-  AlertCircle,
-  ListTodo,
-  CheckCircle2,
-  Circle,
-  TrendingUp,
-} from 'lucide-react';
+import { Inbox, AlertCircle } from 'lucide-react';
 import { useItems } from '@/lib/hooks/useItems';
 import { useCategories } from '@/lib/hooks/useCategories';
 import { useActions } from '@/lib/hooks/useActions';
 import { useItemStats } from '@/lib/hooks/useItemStats';
-import type { Item } from '@/lib/services/items';
+import { useItemActions } from '@/lib/hooks/useItemActions';
+import { useItemFilters } from '@/lib/hooks/useItemFilters';
+import { getCategoryLabel, getCategoryIcon, getActionLabel } from '@/lib/utils/item-helpers';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
-import Toggle from '@/components/ui/Toggle';
 import Modal from '@/components/ui/Modal';
 import Dialog from '@/components/ui/Dialog';
-import MultiSelectCategoryFilter from '@/components/ui/MultiSelectCategoryFilter';
 import Select from '@/components/ui/Select';
 import EmptyState from '@/components/ui/EmptyState';
 import ListItem from '@/components/ui/ListItem';
+import ItemDetailPanel from '@/components/ui/ItemDetailPanel';
 import Loader from '@/components/ui/Loader';
-import StatCard from '@/components/ui/StatCard';
+import ItemStats from '@/components/features/ItemStats';
+import ItemFilters from '@/components/features/ItemFilters';
 import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
-import { cn } from '@/lib/utils';
 
 export default function HomePage() {
-  // Fetch items from Supabase
+  // Fetch data from Supabase
   const {
     items: allItems,
     loading,
@@ -44,21 +36,19 @@ export default function HomePage() {
     toggleStatus,
   } = useItems();
 
-  // Fetch categories from Supabase
   const {
     categories: dbCategories,
     loading: categoriesLoading,
     error: categoriesError,
   } = useCategories();
 
-  // Fetch actions from Supabase
   const {
     actions: dbActions,
     loading: actionsLoading,
     error: actionsError,
   } = useActions();
 
-  // Transform categories for CategoryPicker component
+  // Transform categories and actions for Select components
   const categories = useMemo(() => {
     return dbCategories.map((cat) => ({
       value: cat.id,
@@ -66,7 +56,6 @@ export default function HomePage() {
     }));
   }, [dbCategories]);
 
-  // Transform actions for Select component
   const actions = useMemo(() => {
     return dbActions.map((action) => ({
       value: action.id,
@@ -74,167 +63,27 @@ export default function HomePage() {
     }));
   }, [dbActions]);
 
-  // UI State
-  const [hideDone, setHideDone] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<Item | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Use custom hooks for item actions and filters
+  const itemActions = useItemActions({
+    createNewItem,
+    updateExistingItem,
+    deleteExistingItem,
+    toggleStatus,
+    allItems,
+  });
 
-  // Unified form state (used for both add and edit)
-  const [formTitle, setFormTitle] = useState('');
-  const [formCategory, setFormCategory] = useState('');
-  const [formAction, setFormAction] = useState('');
-  const [formDescription, setFormDescription] = useState('');
-  const [formStatus, setFormStatus] = useState<'todo' | 'done'>('todo');
-  const [formPriority, setFormPriority] = useState<
-    'low' | 'medium' | 'high' | ''
-  >('');
-  const [formUrl, setFormUrl] = useState('');
-  const [formLocation, setFormLocation] = useState('');
-  const [formNote, setFormNote] = useState('');
-  const [formTargetDate, setFormTargetDate] = useState('');
+  const {
+    hideDone,
+    selectedCategories,
+    selectedPriorities,
+    setHideDone,
+    setSelectedCategories,
+    setSelectedPriorities,
+    filteredItems,
+  } = useItemFilters(allItems);
 
   // Calculate stats
   const stats = useItemStats(allItems);
-
-  // Filter items using useMemo
-  const filteredItems = useMemo(() => {
-    return allItems.filter((item) => {
-      if (hideDone && item.status === 'done') return false;
-      if (
-        selectedCategories.length > 0 &&
-        !selectedCategories.includes(item.categoryId)
-      )
-        return false;
-      if (selectedPriorities.length > 0) {
-        if (!item.priority || !selectedPriorities.includes(item.priority)) {
-          return false;
-        }
-      }
-      return true;
-    });
-  }, [allItems, hideDone, selectedCategories, selectedPriorities]);
-
-  // Helper function to reset form
-  const resetForm = () => {
-    setFormTitle('');
-    setFormCategory('');
-    setFormAction('');
-    setFormDescription('');
-    setFormStatus('todo');
-    setFormPriority('');
-    setFormUrl('');
-    setFormLocation('');
-    setFormNote('');
-    setFormTargetDate('');
-    setEditingItem(null);
-  };
-
-  // Helper function to open modal for adding new item
-  const openAddModal = () => {
-    resetForm();
-    setIsModalOpen(true);
-  };
-
-  // Helper function to open modal for editing existing item
-  const openEditModal = (id: string) => {
-    const item = allItems.find((i) => i.id === id);
-    if (item) {
-      setEditingItem(item);
-      setFormTitle(item.title);
-      setFormCategory(item.categoryId);
-      setFormAction(item.actionId || '');
-      setFormDescription(item.description || '');
-      setFormStatus(item.status);
-      setFormPriority(item.priority || '');
-      setFormUrl(item.url || '');
-      setFormLocation(item.location || '');
-      setFormNote(item.note || '');
-      setFormTargetDate(item.targetDate || '');
-      setIsModalOpen(true);
-    }
-  };
-
-  // Close modal and reset form
-  const closeModal = () => {
-    setIsModalOpen(false);
-    resetForm();
-  };
-
-  // Unified handler for both add and edit
-  const handleSubmitForm = async () => {
-    if (!formTitle.trim() || !formCategory) return;
-
-    try {
-      setIsSubmitting(true);
-
-      if (editingItem) {
-        // Update existing item
-        await updateExistingItem(editingItem.id, {
-          actionId: formAction || null,
-          title: formTitle.trim(),
-          description: formDescription.trim() || null,
-          status: formStatus,
-          priority: formPriority || null,
-          url: formUrl.trim() || null,
-          location: formLocation.trim() || null,
-          note: formNote.trim() || null,
-          targetDate: formTargetDate || null,
-        });
-      } else {
-        // Create new item
-        await createNewItem({
-          categoryId: formCategory,
-          actionId: formAction || null,
-          title: formTitle.trim(),
-          description: formDescription.trim() || null,
-          status: formStatus,
-          priority: formPriority || null,
-          url: formUrl.trim() || null,
-          location: formLocation.trim() || null,
-          note: formNote.trim() || null,
-          targetDate: formTargetDate || null,
-        });
-      }
-
-      closeModal();
-    } catch (err) {
-      console.error('Failed to save item:', err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDeleteItem = async (id: string) => {
-    try {
-      await deleteExistingItem(id);
-      setDeleteConfirm(null);
-    } catch (err) {
-      console.error('Failed to delete item:', err);
-    }
-  };
-
-  const handleToggleDone = async (id: string) => {
-    try {
-      await toggleStatus(id);
-    } catch (err) {
-      console.error('Failed to toggle item status:', err);
-    }
-  };
-
-  const getCategoryLabel = (categoryId: string) => {
-    const category = dbCategories.find((c) => c.id === categoryId);
-    return category?.name || categoryId;
-  };
-
-  const getActionLabel = (actionId: string | null | undefined) => {
-    if (!actionId) return null;
-    const action = dbActions.find((a) => a.id === actionId);
-    return action?.name || null;
-  };
 
   return (
     <AuthenticatedLayout>
@@ -280,109 +129,22 @@ export default function HomePage() {
               transition={{ duration: 0.3 }}
             >
               {/* Stats section */}
-              <div className="mb-8">
-                <h2 className="mb-4 text-xl font-bold text-neutral-900">
-                  Overview
-                </h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <StatCard
-                    title="Total Items"
-                    value={stats.total}
-                    icon={ListTodo}
-                    variant="primary"
-                  />
-                  <StatCard
-                    title="Completed"
-                    value={stats.done}
-                    icon={CheckCircle2}
-                    variant="success"
-                  />
-                  <StatCard
-                    title="To Do"
-                    value={stats.todo}
-                    icon={Circle}
-                    variant="accent"
-                  />
-                  <StatCard
-                    title="Completion Rate"
-                    value={`${stats.completionRate}%`}
-                    icon={TrendingUp}
-                    variant="neutral"
-                  />
-                </div>
-              </div>
+              <ItemStats stats={stats} />
 
               {/* Divider */}
               <div className="divider" />
 
               {/* Filters and Actions section */}
-              <div className="mb-6 space-y-4">
-                {/* Top row: Category filter, Toggle, and Add button */}
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center flex-1">
-                    <div className="flex-1 sm:max-w-md">
-                      <MultiSelectCategoryFilter
-                        categories={categories}
-                        selectedCategories={selectedCategories}
-                        onChange={setSelectedCategories}
-                      />
-                    </div>
-                    <Toggle
-                      label="Hide done items"
-                      checked={hideDone}
-                      onChange={(e) => setHideDone(e.target.checked)}
-                    />
-                  </div>
-                  <Button
-                    variant="primary"
-                    icon={<Plus className="h-4 w-4" />}
-                    onClick={openAddModal}
-                  >
-                    Add New Item
-                  </Button>
-                </div>
-
-                {/* Bottom row: Priority filter */}
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-medium text-neutral-700">
-                    Priority:
-                  </span>
-                  {['high', 'medium', 'low'].map((priority) => (
-                    <button
-                      key={priority}
-                      type="button"
-                      onClick={() => {
-                        setSelectedPriorities((prev) =>
-                          prev.includes(priority)
-                            ? prev.filter((p) => p !== priority)
-                            : [...prev, priority]
-                        );
-                      }}
-                      className={cn(
-                        'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-all',
-                        selectedPriorities.includes(priority)
-                          ? priority === 'high'
-                            ? 'badge-danger ring-2 ring-danger-200'
-                            : priority === 'medium'
-                              ? 'badge-accent ring-2 ring-accent-200'
-                              : 'bg-neutral-200 text-neutral-800 ring-2 ring-neutral-300'
-                          : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
-                      )}
-                    >
-                      {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                    </button>
-                  ))}
-                  {selectedPriorities.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPriorities([])}
-                      className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-              </div>
+              <ItemFilters
+                categories={categories}
+                selectedCategories={selectedCategories}
+                onCategoryChange={setSelectedCategories}
+                hideDone={hideDone}
+                onHideDoneChange={setHideDone}
+                selectedPriorities={selectedPriorities}
+                onPriorityChange={setSelectedPriorities}
+                onAddClick={itemActions.openAddModal}
+              />
 
               {/* Items list or empty state */}
               {filteredItems.length === 0 ? (
@@ -402,7 +164,7 @@ export default function HomePage() {
                     allItems.length === 0
                       ? {
                           label: 'Add your first item',
-                          onClick: openAddModal,
+                          onClick: itemActions.openAddModal,
                         }
                       : undefined
                   }
@@ -425,14 +187,14 @@ export default function HomePage() {
                         <ListItem
                           id={item.id}
                           title={item.title}
-                          action={getActionLabel(item.actionId)}
-                          category={getCategoryLabel(item.categoryId)}
+                          action={getActionLabel(item.actionId, dbActions)}
+                          category={getCategoryLabel(item.categoryId, dbCategories)}
+                          categoryIcon={getCategoryIcon(item.categoryId, dbCategories)}
                           done={item.status === 'done'}
                           description={item.description || undefined}
                           priority={item.priority}
-                          onEdit={openEditModal}
-                          onDelete={(id) => setDeleteConfirm(id)}
-                          onToggleDone={handleToggleDone}
+                          onClick={itemActions.handleItemClick}
+                          onToggleDone={itemActions.handleToggleDone}
                         />
                       </motion.div>
                     ))}
@@ -446,9 +208,9 @@ export default function HomePage() {
 
       {/* Unified Add/Edit modal */}
       <Modal
-        open={isModalOpen}
-        onClose={closeModal}
-        title={editingItem ? 'Edit Item' : 'Add New Item'}
+        open={itemActions.isModalOpen}
+        onClose={itemActions.closeModal}
+        title={itemActions.editingItem ? 'Edit Item' : 'Add New Item'}
         size="lg"
       >
         <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
@@ -458,16 +220,16 @@ export default function HomePage() {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   label="Action (optional)"
-                  value={formAction}
-                  onChange={(e) => setFormAction(e.target.value)}
+                  value={itemActions.formAction}
+                  onChange={(e) => itemActions.setFormAction(e.target.value)}
                   options={[{ value: '', label: 'None' }, ...actions]}
                   fullWidth
                 />
                 <Input
                   label="Title"
                   placeholder="What do you want to do?"
-                  value={formTitle}
-                  onChange={(e) => setFormTitle(e.target.value)}
+                  value={itemActions.formTitle}
+                  onChange={(e) => itemActions.setFormTitle(e.target.value)}
                   required
                   fullWidth
                 />
@@ -475,8 +237,8 @@ export default function HomePage() {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   label="Category"
-                  value={formCategory}
-                  onChange={(e) => setFormCategory(e.target.value)}
+                  value={itemActions.formCategory}
+                  onChange={(e) => itemActions.setFormCategory(e.target.value)}
                   options={[
                     { value: '', label: 'Select a category...' },
                     ...categories,
@@ -486,9 +248,9 @@ export default function HomePage() {
                 />
                 <Select
                   label="Status"
-                  value={formStatus}
+                  value={itemActions.formStatus}
                   onChange={(e) =>
-                    setFormStatus(e.target.value as 'todo' | 'done')
+                    itemActions.setFormStatus(e.target.value as 'todo' | 'done')
                   }
                   options={[
                     { value: 'todo', label: 'To Do' },
@@ -505,17 +267,17 @@ export default function HomePage() {
               <Textarea
                 label="Description (optional)"
                 placeholder="Add more details..."
-                value={formDescription}
-                onChange={(e) => setFormDescription(e.target.value)}
+                value={itemActions.formDescription}
+                onChange={(e) => itemActions.setFormDescription(e.target.value)}
                 rows={2}
                 fullWidth
               />
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   label="Priority (optional)"
-                  value={formPriority}
+                  value={itemActions.formPriority}
                   onChange={(e) =>
-                    setFormPriority(
+                    itemActions.setFormPriority(
                       e.target.value as 'low' | 'medium' | 'high' | ''
                     )
                   }
@@ -530,8 +292,8 @@ export default function HomePage() {
                 <Input
                   label="Target Date (optional)"
                   type="date"
-                  value={formTargetDate}
-                  onChange={(e) => setFormTargetDate(e.target.value)}
+                  value={itemActions.formTargetDate}
+                  onChange={(e) => itemActions.setFormTargetDate(e.target.value)}
                   fullWidth
                 />
               </div>
@@ -540,23 +302,23 @@ export default function HomePage() {
                   label="URL (optional)"
                   type="url"
                   placeholder="https://example.com"
-                  value={formUrl}
-                  onChange={(e) => setFormUrl(e.target.value)}
+                  value={itemActions.formUrl}
+                  onChange={(e) => itemActions.setFormUrl(e.target.value)}
                   fullWidth
                 />
                 <Input
                   label="Location (optional)"
                   placeholder="Where is this?"
-                  value={formLocation}
-                  onChange={(e) => setFormLocation(e.target.value)}
+                  value={itemActions.formLocation}
+                  onChange={(e) => itemActions.setFormLocation(e.target.value)}
                   fullWidth
                 />
               </div>
               <Textarea
                 label="Note (optional)"
                 placeholder="Additional notes..."
-                value={formNote}
-                onChange={(e) => setFormNote(e.target.value)}
+                value={itemActions.formNote}
+                onChange={(e) => itemActions.setFormNote(e.target.value)}
                 rows={2}
                 fullWidth
               />
@@ -565,31 +327,66 @@ export default function HomePage() {
         </div>
 
         {/* Actions - Fixed at bottom */}
-        <div className="mt-6 flex justify-end gap-3 border-t border-slate-200 pt-4">
-          <Button variant="ghost" onClick={closeModal} disabled={isSubmitting}>
+        <div className="mt-6 flex justify-end gap-3 pt-4">
+          <Button
+            variant="ghost"
+            onClick={itemActions.closeModal}
+            disabled={itemActions.isSubmitting}
+          >
             Cancel
           </Button>
           <Button
             variant="primary"
-            onClick={handleSubmitForm}
-            disabled={!formTitle.trim() || !formCategory || isSubmitting}
-            loading={isSubmitting}
+            onClick={itemActions.handleSubmitForm}
+            disabled={!itemActions.formTitle.trim() || !itemActions.formCategory || itemActions.isSubmitting}
+            loading={itemActions.isSubmitting}
           >
-            {editingItem ? 'Save Changes' : 'Add Item'}
+            {itemActions.editingItem ? 'Save Changes' : 'Add Item'}
           </Button>
         </div>
       </Modal>
 
       {/* Delete confirmation dialog */}
       <Dialog
-        open={!!deleteConfirm}
-        onClose={() => setDeleteConfirm(null)}
-        onConfirm={() => deleteConfirm && handleDeleteItem(deleteConfirm)}
+        open={!!itemActions.deleteConfirm}
+        onClose={() => itemActions.setDeleteConfirm(null)}
+        onConfirm={() =>
+          itemActions.deleteConfirm &&
+          itemActions.handleDeleteItem(itemActions.deleteConfirm)
+        }
         title="Delete Item"
         description="Are you sure you want to delete this item? This action cannot be undone."
         type="warning"
         confirmText="Delete"
         confirmVariant="danger"
+      />
+
+      {/* Item Detail Panel */}
+      <ItemDetailPanel
+        open={!!itemActions.detailPanelItem}
+        onClose={itemActions.closeDetailPanel}
+        item={
+          itemActions.detailPanelItem
+            ? {
+                id: itemActions.detailPanelItem.id,
+                title: itemActions.detailPanelItem.title,
+                action: getActionLabel(itemActions.detailPanelItem.actionId, dbActions),
+                category: getCategoryLabel(itemActions.detailPanelItem.categoryId, dbCategories),
+                categoryIcon: getCategoryIcon(itemActions.detailPanelItem.categoryId, dbCategories),
+                done: itemActions.detailPanelItem.status === 'done',
+                description: itemActions.detailPanelItem.description,
+                priority: itemActions.detailPanelItem.priority,
+                url: itemActions.detailPanelItem.url,
+                location: itemActions.detailPanelItem.location,
+                note: itemActions.detailPanelItem.note,
+                targetDate: itemActions.detailPanelItem.targetDate,
+                createdAt: itemActions.detailPanelItem.createdAt,
+                updatedAt: itemActions.detailPanelItem.updatedAt,
+              }
+            : null
+        }
+        onEdit={itemActions.handleEditFromPanel}
+        onDelete={itemActions.handleDeleteFromPanel}
       />
     </AuthenticatedLayout>
   );
