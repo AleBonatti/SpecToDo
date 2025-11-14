@@ -189,6 +189,7 @@ export default function HomePage() {
                           title={item.title}
                           action={getActionLabel(item.actionId, dbActions)}
                           category={getCategoryLabel(item.categoryId, dbCategories)}
+                          categoryIcon={getCategoryIcon(item.categoryId, dbCategories)}
                           done={item.status === 'done'}
                           description={item.description || undefined}
                           priority={item.priority}

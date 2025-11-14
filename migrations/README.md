@@ -20,6 +20,12 @@ Creates the Custom Access Token Hook function:
 - Runs automatically on login and token refresh
 - Requires configuration in Supabase Dashboard
 
+### 003_add_category_icons.sql
+Adds icon support to categories:
+- Adds `icon` column (TEXT, nullable) to `categories` table
+- Sets default icons for existing global categories
+- Icons are from the Lucide library
+
 ## How to Run Migrations
 
 ### Option 1: Supabase Dashboard (Recommended)
@@ -29,6 +35,7 @@ Creates the Custom Access Token Hook function:
 3. Copy and paste the contents of `001_add_user_roles.sql`
 4. Click **Run**
 5. Repeat for `002_custom_access_token_hook.sql`
+6. Repeat for `003_add_category_icons.sql`
 
 ### Option 2: Supabase CLI
 
@@ -42,6 +49,7 @@ supabase link --project-ref rnbdnrhvqzfclkzavbxk
 # Run migrations
 supabase db execute --file migrations/001_add_user_roles.sql
 supabase db execute --file migrations/002_custom_access_token_hook.sql
+supabase db execute --file migrations/003_add_category_icons.sql
 ```
 
 ### Option 3: psql (Direct Connection)
@@ -55,6 +63,9 @@ psql "postgresql://postgres:[YOUR-PASSWORD]@db.rnbdnrhvqzfclkzavbxk.supabase.co:
 
 psql "postgresql://postgres:[YOUR-PASSWORD]@db.rnbdnrhvqzfclkzavbxk.supabase.co:5432/postgres" \
   -f migrations/002_custom_access_token_hook.sql
+
+psql "postgresql://postgres:[YOUR-PASSWORD]@db.rnbdnrhvqzfclkzavbxk.supabase.co:5432/postgres" \
+  -f migrations/003_add_category_icons.sql
 ```
 
 ## Post-Migration Configuration
