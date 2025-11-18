@@ -6,9 +6,11 @@ import { getDb, categories } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { imageToolRegistry } from '@/lib/ai/image-tools';
 import { MovieImageTool } from '@/lib/ai/tools/movie-tool';
+import { GameImageTool } from '@/lib/ai/tools/game-tool';
 
 // Register tools
 imageToolRegistry.register('cinema', new MovieImageTool());
+imageToolRegistry.register('game', new GameImageTool());
 
 /**
  * AI Suggestions API Route
@@ -74,7 +76,6 @@ For each suggestion, provide:
 2. A brief 1-2 sentence description explaining why it's similar or why the user might enjoy it
 3. Year of creation/release (if applicable, empty string if unknown)
 4. Creator/Director/Artist/Author name (if known, empty string if unknown)
-5. An IMDB ID code (if known, empty string if unknown)
 
 Format your response as a JSON array with objects containing "title", "description", "year", and "creator" fields.
 Make sure the suggestions are diverse but related to the original item.
@@ -86,8 +87,7 @@ Example format:
     "title": "Example Title",
     "description": "Brief description of why this is similar.",
     "year": "1994",
-    "creator": "Quentin Tarantino",
-    "id": "tt0110912"
+    "creator": "Quentin Tarantino"
   }
 ]`;
 

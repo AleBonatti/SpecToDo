@@ -34,6 +34,7 @@ const CONTENT_TYPES = [
   { value: 'place', label: 'Places/Travel' },
   { value: 'book', label: 'Books/Literature' },
   { value: 'food', label: 'Food/Restaurants' },
+  { value: 'game', label: 'Games/Video Games' },
 ]
 
 type CategoryType = typeof CATEGORY_TYPES[keyof typeof CATEGORY_TYPES]

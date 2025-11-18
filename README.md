@@ -21,7 +21,7 @@ A minimalist and delightful app to keep track of future activities—movies to w
 - **Database**: Supabase (PostgreSQL with RLS)
 - **Authentication**: Supabase Auth
 - **AI Integration**: OpenAI GPT-4o-mini (via Vercel AI SDK)
-- **Image APIs**: TMDB (movies), Unsplash (fallback)
+- **Image APIs**: TMDB (movies), IGDB (games)
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
 - **Package Manager**: pnpm
@@ -71,11 +71,14 @@ A minimalist and delightful app to keep track of future activities—movies to w
    # AI Features (optional but recommended)
    OPENAI_API_KEY=your-openai-api-key-here
    TMDB_API_KEY=your-tmdb-api-key-here
+   IGDB_CLIENT_ID=your-twitch-client-id-here
+   IGDB_CLIENT_SECRET=your-twitch-client-secret-here
    ```
 
    **API Key Setup:**
    - OpenAI: Get your API key from https://platform.openai.com/api-keys
    - TMDB: Get your API key from https://www.themoviedb.org/settings/api
+   - IGDB: Register your app at https://dev.twitch.tv/console/apps (requires Twitch account)
 
 5. **Generate TypeScript types from Supabase**
    ```bash
@@ -91,6 +94,7 @@ A minimalist and delightful app to keep track of future activities—movies to w
      - Books → `book`
      - Restaurants → `food`
      - Travel/Places → `place`
+     - Games/Video Games → `game`
      - Default → `generic`
 
 7. **Start development server**

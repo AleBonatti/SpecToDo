@@ -54,6 +54,7 @@ export abstract class BaseImageSearchTool implements ImageSearchTool {
       place: 'https://placehold.co/600x400/059669/ffffff?text=Place',
       book: 'https://placehold.co/600x400/dc2626/ffffff?text=Book',
       food: 'https://placehold.co/600x400/ea580c/ffffff?text=Food',
+      game: 'https://placehold.co/600x400/8b5cf6/ffffff?text=Game',
       generic: 'https://placehold.co/600x400/64748b/ffffff?text=Item',
     };
 
@@ -81,6 +82,7 @@ export function getPlaceholderImageUrl(contentType: string): string {
     place: 'https://placehold.co/600x400/059669/ffffff?text=Place',
     book: 'https://placehold.co/600x400/dc2626/ffffff?text=Book',
     food: 'https://placehold.co/600x400/ea580c/ffffff?text=Food',
+    game: 'https://placehold.co/600x400/8b5cf6/ffffff?text=Game',
     generic: 'https://placehold.co/600x400/64748b/ffffff?text=Item',
   };
 
