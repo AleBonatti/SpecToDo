@@ -21,7 +21,7 @@ A minimalist and delightful app to keep track of future activities—movies to w
 - **Database**: Supabase (PostgreSQL with RLS)
 - **Authentication**: Supabase Auth
 - **AI Integration**: OpenAI GPT-4o-mini (via Vercel AI SDK)
-- **Image APIs**: TMDB (movies), IGDB (games)
+- **Image APIs**: TMDB (movies), IGDB (games), Spotify (music)
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
 - **Package Manager**: pnpm
@@ -73,12 +73,15 @@ A minimalist and delightful app to keep track of future activities—movies to w
    TMDB_API_KEY=your-tmdb-api-key-here
    IGDB_CLIENT_ID=your-twitch-client-id-here
    IGDB_CLIENT_SECRET=your-twitch-client-secret-here
+   SPOTIFY_CLIENT_ID=your-spotify-client-id-here
+   SPOTIFY_CLIENT_SECRET=your-spotify-client-secret-here
    ```
 
    **API Key Setup:**
    - OpenAI: Get your API key from https://platform.openai.com/api-keys
    - TMDB: Get your API key from https://www.themoviedb.org/settings/api
    - IGDB: Register your app at https://dev.twitch.tv/console/apps (requires Twitch account)
+   - Spotify: Register your app at https://developer.spotify.com/dashboard
 
 5. **Generate TypeScript types from Supabase**
    ```bash

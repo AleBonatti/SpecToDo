@@ -7,10 +7,12 @@ import { eq } from 'drizzle-orm';
 import { imageToolRegistry } from '@/lib/ai/image-tools';
 import { MovieImageTool } from '@/lib/ai/tools/movie-tool';
 import { GameImageTool } from '@/lib/ai/tools/game-tool';
+import { MusicImageTool } from '@/lib/ai/tools/music-tool';
 
 // Register tools
 imageToolRegistry.register('cinema', new MovieImageTool());
 imageToolRegistry.register('game', new GameImageTool());
+imageToolRegistry.register('music', new MusicImageTool());
 
 /**
  * AI Suggestions API Route
