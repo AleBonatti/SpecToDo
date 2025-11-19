@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { getDb, categories } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { imageToolRegistry } from '@/lib/ai/image-tools';
+import '@/lib/ai/register-tools'; // Register all image tools
 
 /**
  * AI Item Enrichment API Route
