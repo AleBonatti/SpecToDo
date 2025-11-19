@@ -10,6 +10,7 @@ import { GameImageTool } from '@/lib/ai/tools/game-tool';
 import { MusicImageTool } from '@/lib/ai/tools/music-tool';
 import { BookImageTool } from '@/lib/ai/tools/book-tool';
 import { PlaceImageTool } from '@/lib/ai/tools/place-tool';
+import { UnsplashImageTool } from '@/lib/ai/tools/unsplash-tool';
 
 // Register tools
 imageToolRegistry.register('cinema', new MovieImageTool());
@@ -19,6 +20,7 @@ imageToolRegistry.register('book', new BookImageTool());
 imageToolRegistry.register('place', new PlaceImageTool());
 imageToolRegistry.register('travel', new PlaceImageTool());
 imageToolRegistry.register('restaurant', new PlaceImageTool());
+imageToolRegistry.register('generic', new UnsplashImageTool());
 
 /**
  * AI Suggestions API Route
