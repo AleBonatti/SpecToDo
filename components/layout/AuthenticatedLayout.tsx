@@ -51,8 +51,10 @@ export default function AuthenticatedLayout({ children }: AuthenticatedLayoutPro
         </a>
         <Header isAuthenticated={true} onLogout={handleLogout} />
         <main id="main-content" className="flex-1">
-          <Container size="2xl" className="py-8">
-            {children}
+          <Container size="2xl" className="py-4">
+            <div className="rounded-2xl border border-neutral-200 bg-[#F2F2F2] p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+              {children}
+            </div>
           </Container>
         </main>
         <Footer />

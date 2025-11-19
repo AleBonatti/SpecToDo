@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * Admin Users Management Page
@@ -7,121 +7,122 @@
  * Only accessible to admin users.
  */
 
-import { useState } from 'react'
-import { Plus, User as UserIcon } from 'lucide-react'
-import Button from '@/components/ui/Button'
-import Modal from '@/components/ui/Modal'
-import Input from '@/components/ui/Input'
-import Select from '@/components/ui/Select'
-import Loader from '@/components/ui/Loader'
-import EmptyState from '@/components/ui/EmptyState'
-import { UserListItem } from '@/components/admin/UserListItem'
-import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
-import { useAdminUsers } from '@/lib/hooks/useAdminUsers'
-import type { AdminUser, CreateUserInput } from '@/lib/services/admin-users'
-import { USER_ROLES, type UserRole } from '@/types/auth'
+import { useState } from 'react';
+import { Plus, User as UserIcon } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Input from '@/components/ui/Input';
+import Select from '@/components/ui/Select';
+import Loader from '@/components/ui/Loader';
+import EmptyState from '@/components/ui/EmptyState';
+import { UserListItem } from '@/components/admin/UserListItem';
+import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
+import { useAdminUsers } from '@/lib/hooks/useAdminUsers';
+import type { AdminUser, CreateUserInput } from '@/lib/services/admin-users';
+import { USER_ROLES, type UserRole } from '@/types/auth';
 
 export default function AdminUsersPage() {
-  const { users, isLoading, error, createNewUser, updateUser, removeUser } = useAdminUsers()
+  const { users, isLoading, error, createNewUser, updateUser, removeUser } =
+    useAdminUsers();
 
   // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
-  const [formName, setFormName] = useState('')
-  const [formEmail, setFormEmail] = useState('')
-  const [formPassword, setFormPassword] = useState('')
-  const [formRole, setFormRole] = useState<UserRole>(USER_ROLES.USER)
+  const [formName, setFormName] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formPassword, setFormPassword] = useState('');
+  const [formRole, setFormRole] = useState<UserRole>(USER_ROLES.USER);
 
   // Delete confirmation
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Reset form
   const resetForm = () => {
-    setFormName('')
-    setFormEmail('')
-    setFormPassword('')
-    setFormRole(USER_ROLES.USER)
-    setEditingUser(null)
-  }
+    setFormName('');
+    setFormEmail('');
+    setFormPassword('');
+    setFormRole(USER_ROLES.USER);
+    setEditingUser(null);
+  };
 
   // Open modal for adding new user
   const openAddModal = () => {
-    resetForm()
-    setIsModalOpen(true)
-  }
+    resetForm();
+    setIsModalOpen(true);
+  };
 
   // Open modal for editing existing user
   const openEditModal = (user: AdminUser) => {
-    setEditingUser(user)
-    setFormName(user.fullName || '')
-    setFormEmail(user.email || '')
-    setFormPassword('') // Password not needed for edit
-    setFormRole(user.role)
-    setIsModalOpen(true)
-  }
+    setEditingUser(user);
+    setFormName(user.fullName || '');
+    setFormEmail(user.email || '');
+    setFormPassword(''); // Password not needed for edit
+    setFormRole(user.role);
+    setIsModalOpen(true);
+  };
 
   // Close modal and reset form
   const closeModal = () => {
-    setIsModalOpen(false)
-    resetForm()
-  }
+    setIsModalOpen(false);
+    resetForm();
+  };
 
   // Handle form submission
   const handleSubmitForm = async () => {
     if (editingUser) {
       // Update existing user (name and role)
-      if (!formRole) return
+      if (!formRole) return;
 
       try {
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         await updateUser(editingUser.id, {
           fullName: formName.trim() || undefined,
-          role: formRole
-        })
-        closeModal()
+          role: formRole,
+        });
+        closeModal();
       } catch (err) {
-        console.error('Failed to update user:', err)
+        console.error('Failed to update user:', err);
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     } else {
       // Create new user
-      if (!formEmail.trim() || !formPassword.trim()) return
+      if (!formEmail.trim() || !formPassword.trim()) return;
 
       try {
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         const input: CreateUserInput = {
           email: formEmail.trim(),
           password: formPassword.trim(),
           fullName: formName.trim() || undefined,
           role: formRole,
-        }
-        await createNewUser(input)
-        closeModal()
+        };
+        await createNewUser(input);
+        closeModal();
       } catch (err) {
-        console.error('Failed to create user:', err)
+        console.error('Failed to create user:', err);
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     }
-  }
+  };
 
   // Handle delete
   const handleDelete = async (userId: string) => {
     try {
-      setIsDeleting(true)
-      await removeUser(userId)
-      setDeleteConfirm(null)
+      setIsDeleting(true);
+      await removeUser(userId);
+      setDeleteConfirm(null);
     } catch (err) {
-      console.error('Failed to delete user:', err)
+      console.error('Failed to delete user:', err);
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -130,23 +131,24 @@ export default function AdminUsersPage() {
           <Loader size="lg" />
         </div>
       </AuthenticatedLayout>
-    )
+    );
   }
 
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
       <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-        <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">User Management</h1>
+        <div className="py-6">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+            User Management
+          </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             Manage user accounts and roles
           </p>
         </div>
       </div>
 
-      <div className="container-custom py-8">
-
+      <div className="py-8">
         {/* Error message */}
         {error && (
           <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-950 dark:text-red-200">
@@ -246,7 +248,14 @@ export default function AdminUsersPage() {
 
                 <div className="rounded-lg bg-neutral-50 p-4 dark:bg-neutral-800">
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Email: <span className="font-medium text-neutral-900 dark:text-neutral-100">{editingUser.email || <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500">{editingUser.id}</span>}</span>
+                    Email:{' '}
+                    <span className="font-medium text-neutral-900 dark:text-neutral-100">
+                      {editingUser.email || (
+                        <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500">
+                          {editingUser.id}
+                        </span>
+                      )}
+                    </span>
                   </p>
                 </div>
               </>
@@ -267,7 +276,11 @@ export default function AdminUsersPage() {
 
           {/* Actions */}
           <div className="mt-6 flex justify-end gap-3 border-t border-neutral-200 pt-4 dark:border-neutral-800">
-            <Button variant="ghost" onClick={closeModal} disabled={isSubmitting}>
+            <Button
+              variant="ghost"
+              onClick={closeModal}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button
@@ -285,5 +298,5 @@ export default function AdminUsersPage() {
         </Modal>
       </div>
     </AuthenticatedLayout>
-  )
+  );
 }
