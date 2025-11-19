@@ -1,9 +1,8 @@
 'use client';
-
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  ListTodo,
   LogOut,
   Users,
   Key,
@@ -40,7 +39,14 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
               href={isAuthenticated ? '/' : '/'}
               className="flex items-center gap-2 font-bold text-neutral-900 hover:text-primary-600 transition-colors dark:text-neutral-100 dark:hover:text-primary-400"
             >
-              <ListTodo className="h-6 w-6 text-primary-600 dark:text-primary-500" />
+              <Image
+                src="/logo.svg"
+                width={24}
+                height={24}
+                unoptimized
+                className="h-6 w-6"
+                alt="Everly"
+              />
               <span className="text-lg">Everly</span>
             </Link>
 
