@@ -49,16 +49,24 @@ export default function AIEnrichment({
 
       const data = await response.json();
 
+      // Prepare update payload - only include fields that have values
+      const updatePayload: { imageUrl?: string | null; metadata?: string } = {};
+
+      if (data.imageUrl !== undefined) {
+        updatePayload.imageUrl = data.imageUrl;
+      }
+
+      if (data.metadata && Object.keys(data.metadata).length > 0) {
+        updatePayload.metadata = JSON.stringify(data.metadata);
+      }
+
       // Update the item with enriched data
       const updateResponse = await fetch(`/api/items/${itemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          imageUrl: data.imageUrl,
-          metadata: JSON.stringify(data.metadata),
-        }),
+        body: JSON.stringify(updatePayload),
       });
 
       if (!updateResponse.ok) {

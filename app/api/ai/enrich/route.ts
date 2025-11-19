@@ -136,19 +136,25 @@ Example response for a book:
           ? `${title} ${location}`
           : title;
 
-      imageUrl = await imageToolRegistry.getImage(
+      const fetchedImageUrl = await imageToolRegistry.getImage(
         contentType,
         searchQuery,
         validatedMetadata.year
       );
+
+      // Only set imageUrl if it's not a placeholder
+      // Placeholder images use placehold.co domain
+      if (fetchedImageUrl && !fetchedImageUrl.includes('placehold.co')) {
+        imageUrl = fetchedImageUrl;
+      }
     } catch (imageError) {
       console.error('Failed to fetch image:', imageError);
-      // imageToolRegistry.getImage already returns placeholder on error
+      // Don't set imageUrl if fetch failed
     }
 
     return NextResponse.json({
       metadata: validatedMetadata,
-      imageUrl,
+      imageUrl: imageUrl || null, // Return null if no real image found
     });
   } catch (error) {
     console.error('AI enrichment error:', error);
