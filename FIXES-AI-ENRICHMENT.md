@@ -2,7 +2,27 @@
 
 ## Issues Fixed
 
-### 1. **Data Not Persisting to Database** ✅
+### 1. **Placeholder Images Being Persisted** ✅
+
+**Problem:** Placeholder images (from placehold.co) were being saved to the database when real images couldn't be found.
+
+**Root Cause:** The enrichment endpoint returned placeholder URLs from the image tool registry without filtering them out.
+
+**Solution:**
+- Added check in enrich endpoint to filter out placehold.co URLs
+- Returns `null` instead of placeholder URL when no real image found
+- AIEnrichment component only updates imageUrl field when a real image exists
+- Database stays clean with only real, high-quality images
+
+**Files Modified:**
+- `app/api/ai/enrich/route.ts` - Filter placeholder URLs
+- `components/features/AIEnrichment.tsx` - Conditional field updates
+
+**Commit:** `fix: Only persist real images, not placeholders`
+
+---
+
+### 2. **Data Not Persisting to Database** ✅
 
 **Problem:** Enriched data (imageUrl and metadata) was being fetched by the API but not saved to the database.
 
@@ -21,7 +41,7 @@
 
 ---
 
-### 2. **Images Always Showing as Placeholders** ✅
+### 3. **Images Always Showing as Placeholders** ✅
 
 **Problem:** The enrichment API was returning placeholder images instead of actual images from the various API sources (TMDB, Spotify, Google Places, Unsplash, etc.).
 
@@ -212,6 +232,9 @@ If enrichment still isn't working:
 
 3. ✅ `fix: Initialize image tool registry in enrichment endpoint`
    - Fixed placeholder image issue
+
+4. ✅ `fix: Only persist real images, not placeholders`
+   - Filter out placeholder URLs, only save real images
 
 **Branch:** `feature/ai-item-enrichment`
 **Status:** 🟢 All known issues resolved
