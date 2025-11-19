@@ -17,6 +17,8 @@ imageToolRegistry.register('game', new GameImageTool());
 imageToolRegistry.register('music', new MusicImageTool());
 imageToolRegistry.register('book', new BookImageTool());
 imageToolRegistry.register('place', new PlaceImageTool());
+imageToolRegistry.register('travel', new PlaceImageTool());
+imageToolRegistry.register('restaurant', new PlaceImageTool());
 
 /**
  * AI Suggestions API Route
@@ -31,13 +33,15 @@ const requestSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   category: z.string().optional(),
   categoryId: z.string().optional(),
+  location: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
     const body = await request.json();
-    const { action, title, category, categoryId } = requestSchema.parse(body);
+    const { action, title, category, categoryId, location } =
+      requestSchema.parse(body);
 
     // Fetch category content_type from database if categoryId provided
     let contentType = 'generic';
@@ -74,6 +78,7 @@ Given the following activity:
 Action: ${action}
 Title: ${title}
 ${category ? `Category: ${category}` : ''}
+${location ? `Location: ${location}` : ''}
 Content Type: ${contentType}
 
 Please suggest 3 similar ${action} activities or content that the user might enjoy.
@@ -142,9 +147,18 @@ Example format:
         // Use the image tool registry to get the right image
         if (suggestion.title) {
           try {
+            // For place-based content types (place, travel, restaurant), append location to search query
+            const searchQuery =
+              (contentType === 'place' ||
+                contentType === 'travel' ||
+                contentType === 'restaurant') &&
+              location
+                ? `${suggestion.title} ${location}`
+                : suggestion.title;
+
             imageUrl = await imageToolRegistry.getImage(
               contentType,
-              suggestion.title,
+              searchQuery,
               suggestion.year
             );
           } catch (imageError) {

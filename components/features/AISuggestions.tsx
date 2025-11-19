@@ -19,6 +19,7 @@ export interface AISuggestionsProps {
   title: string;
   category?: string;
   categoryId?: string;
+  location?: string;
   onClose?: () => void;
 }
 
@@ -27,6 +28,7 @@ export default function AISuggestions({
   title,
   category,
   categoryId,
+  location,
   onClose,
 }: AISuggestionsProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -50,6 +52,7 @@ export default function AISuggestions({
           title,
           category,
           categoryId,
+          location,
         }),
       });
 

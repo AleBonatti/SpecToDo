@@ -266,6 +266,7 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
                     title={item.title}
                     category={item.category}
                     categoryId={item.categoryId}
+                    location={item.location || undefined}
                   />
                 </div>
               )}
