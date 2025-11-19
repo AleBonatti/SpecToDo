@@ -143,7 +143,7 @@ export default function AISuggestions({
 
             {/* Suggestions List */}
             {!loading && !error && suggestions.length > 0 && (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {suggestions.map((suggestion, index) => (
                   <motion.div
                     key={index}
