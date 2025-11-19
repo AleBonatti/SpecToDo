@@ -6,6 +6,15 @@
  */
 
 // Domain types
+export interface ItemMetadata {
+  year?: string
+  creator?: string
+  genre?: string
+  rating?: string
+  duration?: string
+  [key: string]: string | undefined // Allow additional custom fields
+}
+
 export interface Item {
   id: string
   userId: string
@@ -19,6 +28,8 @@ export interface Item {
   location?: string | null
   note?: string | null
   targetDate?: string | null
+  imageUrl?: string | null
+  metadata?: string | null // JSON string
   createdAt: string
   updatedAt: string
 }
@@ -34,6 +45,8 @@ export interface CreateItemInput {
   location?: string | null
   note?: string | null
   targetDate?: string | null
+  imageUrl?: string | null
+  metadata?: string | null
 }
 
 export interface UpdateItemInput {
@@ -46,6 +59,8 @@ export interface UpdateItemInput {
   location?: string | null
   note?: string | null
   targetDate?: string | null
+  imageUrl?: string | null
+  metadata?: string | null
 }
 
 export interface ListItemsOptions {

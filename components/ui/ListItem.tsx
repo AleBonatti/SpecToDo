@@ -21,6 +21,7 @@ export interface ListItemProps {
   done: boolean;
   description?: string;
   priority?: 'low' | 'medium' | 'high' | null;
+  imageUrl?: string | null;
   onClick: (id: string) => void;
   onToggleDone: (id: string, done: boolean) => void;
   className?: string;
@@ -38,6 +39,7 @@ const ListItem: React.FC<ListItemProps> = ({
   done,
   description,
   priority,
+  imageUrl,
   onClick,
   onToggleDone,
   className,
@@ -171,26 +173,44 @@ const ListItem: React.FC<ListItemProps> = ({
         </button>
       </div>
 
-      {/* Title with optional action */}
-      <h3
-        className={cn(
-          'mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100'
+      {/* Image and Content Layout */}
+      <div className={cn('flex gap-3', imageUrl && 'flex-row')}>
+        {/* Image */}
+        {imageUrl && (
+          <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
         )}
-      >
-        {action && (
-          <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
-            {action}
-          </span>
-        )}
-        <span className={cn(done && 'line-through')}>{title}</span>
-      </h3>
 
-      {/* Description (if exists) */}
-      {description && (
-        <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
-          {description}
-        </p>
-      )}
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          {/* Title with optional action */}
+          <h3
+            className={cn(
+              'mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100'
+            )}
+          >
+            {action && (
+              <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
+                {action}
+              </span>
+            )}
+            <span className={cn(done && 'line-through')}>{title}</span>
+          </h3>
+
+          {/* Description (if exists) */}
+          {description && (
+            <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+              {description}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

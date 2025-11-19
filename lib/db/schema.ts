@@ -49,6 +49,8 @@ export const items = pgTable('items', {
   location: text('location'),
   note: text('note'),
   targetDate: text('target_date'),
+  imageUrl: text('image_url'),
+  metadata: text('metadata'), // JSON string containing AI-enriched data
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })

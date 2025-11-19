@@ -21,6 +21,8 @@ import { getIconComponent } from '@/lib/utils/icon-utils';
 import Badge from './Badge';
 import Button from './Button';
 import AISuggestions from '@/components/features/AISuggestions';
+import AIEnrichment from '@/components/features/AIEnrichment';
+import type { ItemMetadata } from '@/lib/services/items';
 
 export interface ItemDetailPanelProps {
   open: boolean;
@@ -39,11 +41,14 @@ export interface ItemDetailPanelProps {
     location?: string | null;
     note?: string | null;
     targetDate?: string | null;
+    imageUrl?: string | null;
+    metadata?: string | null;
     createdAt?: string;
     updatedAt?: string;
   } | null;
   onEdit: () => void;
   onDelete: () => void;
+  onRefresh?: () => void;
 }
 
 const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
@@ -52,6 +57,7 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
   item,
   onEdit,
   onDelete,
+  onRefresh,
 }) => {
   if (!item) return null;
 
@@ -187,6 +193,75 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
                 </h3>
               </div>
 
+              {/* Image */}
+              {item.imageUrl && (
+                <div>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
+                    Image
+                  </label>
+                  <div className="rounded-lg overflow-hidden">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Metadata */}
+              {item.metadata && (() => {
+                try {
+                  const metadata: ItemMetadata = JSON.parse(item.metadata);
+                  const hasMetadata = Object.values(metadata).some(v => v && v.trim() !== '');
+
+                  if (!hasMetadata) return null;
+
+                  return (
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
+                        Details
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {metadata.year && (
+                          <div className="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                            <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">Year</p>
+                            <p className="text-sm text-neutral-900 dark:text-neutral-100">{metadata.year}</p>
+                          </div>
+                        )}
+                        {metadata.creator && (
+                          <div className="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                            <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">Creator</p>
+                            <p className="text-sm text-neutral-900 dark:text-neutral-100">{metadata.creator}</p>
+                          </div>
+                        )}
+                        {metadata.genre && (
+                          <div className="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                            <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">Genre</p>
+                            <p className="text-sm text-neutral-900 dark:text-neutral-100">{metadata.genre}</p>
+                          </div>
+                        )}
+                        {metadata.rating && (
+                          <div className="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                            <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">Rating</p>
+                            <p className="text-sm text-neutral-900 dark:text-neutral-100">{metadata.rating}</p>
+                          </div>
+                        )}
+                        {metadata.duration && (
+                          <div className="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                            <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">Duration</p>
+                            <p className="text-sm text-neutral-900 dark:text-neutral-100">{metadata.duration}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                } catch (e) {
+                  console.error('Failed to parse metadata:', e);
+                  return null;
+                }
+              })()}
+
               {/* Description */}
               {item.description && (
                 <div>
@@ -257,6 +332,20 @@ const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
                   </div>
                 </div>
               )}
+
+              {/* AI Enrichment */}
+              <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800">
+                <AIEnrichment
+                  itemId={item.id}
+                  title={item.title}
+                  categoryId={item.categoryId}
+                  location={item.location || undefined}
+                  onEnriched={() => {
+                    // Refresh the item data
+                    onRefresh?.();
+                  }}
+                />
+              </div>
 
               {/* AI Suggestions */}
               {item.action && (
