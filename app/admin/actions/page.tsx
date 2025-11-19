@@ -140,7 +140,7 @@ export default function AdminActionsPage() {
     <AuthenticatedLayout>
       {/* Page Header */}
       <div className="border-b border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-        <div className="container-custom py-8">
+        <div className="py-8">
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
             Action Management
           </h1>
@@ -151,7 +151,7 @@ export default function AdminActionsPage() {
         </div>
       </div>
 
-      <div className="container-custom py-8">
+      <div className="py-8">
         {/* Error message */}
         {error && (
           <div className="mb-6 rounded-lg bg-danger-50 border border-danger-200 p-4 text-danger-800 dark:bg-danger-950 dark:border-danger-800 dark:text-danger-200">

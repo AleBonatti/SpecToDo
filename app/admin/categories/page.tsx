@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * Admin Categories Management Page
@@ -7,25 +7,28 @@
  * Only accessible to admin users.
  */
 
-import { useState } from 'react'
-import { Plus, FolderTree } from 'lucide-react'
-import Button from '@/components/ui/Button'
-import Modal from '@/components/ui/Modal'
-import Input from '@/components/ui/Input'
-import Select from '@/components/ui/Select'
-import IconPicker from '@/components/ui/IconPicker'
-import Loader from '@/components/ui/Loader'
-import EmptyState from '@/components/ui/EmptyState'
-import { SortableList } from '@/components/ui/SortableList'
-import { CategoryListItem } from '@/components/admin/CategoryListItem'
-import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
-import { useAdminCategories } from '@/lib/hooks/useAdminCategories'
-import type { AdminCategory, CreateCategoryInput } from '@/lib/services/admin-categories'
+import { useState } from 'react';
+import { Plus, FolderTree } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Input from '@/components/ui/Input';
+import Select from '@/components/ui/Select';
+import IconPicker from '@/components/ui/IconPicker';
+import Loader from '@/components/ui/Loader';
+import EmptyState from '@/components/ui/EmptyState';
+import { SortableList } from '@/components/ui/SortableList';
+import { CategoryListItem } from '@/components/admin/CategoryListItem';
+import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
+import { useAdminCategories } from '@/lib/hooks/useAdminCategories';
+import type {
+  AdminCategory,
+  CreateCategoryInput,
+} from '@/lib/services/admin-categories';
 
 const CATEGORY_TYPES = {
   DEFAULT: 'default',
   CUSTOM: 'custom',
-} as const
+} as const;
 
 const CONTENT_TYPES = [
   { value: 'generic', label: 'Generic' },
@@ -35,68 +38,78 @@ const CONTENT_TYPES = [
   { value: 'book', label: 'Books/Literature' },
   { value: 'food', label: 'Food/Restaurants' },
   { value: 'game', label: 'Games/Video Games' },
-]
+];
 
-type CategoryType = typeof CATEGORY_TYPES[keyof typeof CATEGORY_TYPES]
+type CategoryType = (typeof CATEGORY_TYPES)[keyof typeof CATEGORY_TYPES];
 
 export default function AdminCategoriesPage() {
-  const { categories, isLoading, error, createNewCategory, updateCategory, removeCategory, reorderCategories } = useAdminCategories()
+  const {
+    categories,
+    isLoading,
+    error,
+    createNewCategory,
+    updateCategory,
+    removeCategory,
+    reorderCategories,
+  } = useAdminCategories();
 
   // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingCategory, setEditingCategory] = useState<AdminCategory | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<AdminCategory | null>(
+    null
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
-  const [formName, setFormName] = useState('')
-  const [formIcon, setFormIcon] = useState<string>('')
-  const [formType, setFormType] = useState<CategoryType>(CATEGORY_TYPES.CUSTOM)
-  const [formContentType, setFormContentType] = useState('generic')
-  const [formDisplayOrder, setFormDisplayOrder] = useState('0')
+  const [formName, setFormName] = useState('');
+  const [formIcon, setFormIcon] = useState<string>('');
+  const [formType, setFormType] = useState<CategoryType>(CATEGORY_TYPES.CUSTOM);
+  const [formContentType, setFormContentType] = useState('generic');
+  const [formDisplayOrder, setFormDisplayOrder] = useState('0');
 
   // Delete confirmation
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Reset form
   const resetForm = () => {
-    setFormName('')
-    setFormIcon('')
-    setFormType(CATEGORY_TYPES.CUSTOM)
-    setFormContentType('generic')
-    setFormDisplayOrder('0')
-    setEditingCategory(null)
-  }
+    setFormName('');
+    setFormIcon('');
+    setFormType(CATEGORY_TYPES.CUSTOM);
+    setFormContentType('generic');
+    setFormDisplayOrder('0');
+    setEditingCategory(null);
+  };
 
   // Open modal for adding new category
   const openAddModal = () => {
-    resetForm()
-    setIsModalOpen(true)
-  }
+    resetForm();
+    setIsModalOpen(true);
+  };
 
   // Open modal for editing existing category
   const openEditModal = (category: AdminCategory) => {
-    setEditingCategory(category)
-    setFormName(category.name)
-    setFormIcon(category.icon || '')
-    setFormType(category.type as CategoryType)
-    setFormContentType(category.contentType || 'generic')
-    setFormDisplayOrder(category.displayOrder.toString())
-    setIsModalOpen(true)
-  }
+    setEditingCategory(category);
+    setFormName(category.name);
+    setFormIcon(category.icon || '');
+    setFormType(category.type as CategoryType);
+    setFormContentType(category.contentType || 'generic');
+    setFormDisplayOrder(category.displayOrder.toString());
+    setIsModalOpen(true);
+  };
 
   // Close modal and reset form
   const closeModal = () => {
-    setIsModalOpen(false)
-    resetForm()
-  }
+    setIsModalOpen(false);
+    resetForm();
+  };
 
   // Handle form submission
   const handleSubmitForm = async () => {
-    if (!formName.trim()) return
+    if (!formName.trim()) return;
 
     try {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
 
       if (editingCategory) {
         // Update existing category
@@ -106,7 +119,7 @@ export default function AdminCategoriesPage() {
           type: formType,
           contentType: formContentType,
           displayOrder: parseInt(formDisplayOrder) || 0,
-        })
+        });
       } else {
         // Create new category
         const input: CreateCategoryInput = {
@@ -115,39 +128,39 @@ export default function AdminCategoriesPage() {
           type: formType,
           contentType: formContentType,
           displayOrder: parseInt(formDisplayOrder) || 0,
-        }
-        await createNewCategory(input)
+        };
+        await createNewCategory(input);
       }
-      closeModal()
+      closeModal();
     } catch (err) {
-      console.error('Failed to save category:', err)
+      console.error('Failed to save category:', err);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Handle delete
   const handleDelete = async (categoryId: string) => {
     try {
-      setIsDeleting(true)
-      await removeCategory(categoryId)
-      setDeleteConfirm(null)
+      setIsDeleting(true);
+      await removeCategory(categoryId);
+      setDeleteConfirm(null);
     } catch (err) {
-      console.error('Failed to delete category:', err)
+      console.error('Failed to delete category:', err);
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   // Handle reorder
   const handleReorder = async (reorderedCategories: AdminCategory[]) => {
     // Update display order for all categories in a single batch request
     try {
-      await reorderCategories(reorderedCategories)
+      await reorderCategories(reorderedCategories);
     } catch (err) {
-      console.error('Failed to reorder categories:', err)
+      console.error('Failed to reorder categories:', err);
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -156,23 +169,24 @@ export default function AdminCategoriesPage() {
           <Loader size="lg" />
         </div>
       </AuthenticatedLayout>
-    )
+    );
   }
 
   return (
     <AuthenticatedLayout>
       {/* Page Header */}
       <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-        <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Category Management</h1>
+        <div className="py-6">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+            Category Management
+          </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             Manage categories for organizing items
           </p>
         </div>
       </div>
 
-      <div className="container-custom py-8">
-
+      <div className="py-8">
         {/* Error message */}
         {error && (
           <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-950 dark:text-red-200">
@@ -239,11 +253,7 @@ export default function AdminCategoriesPage() {
               fullWidth
             />
 
-            <IconPicker
-              label="Icon"
-              value={formIcon}
-              onChange={setFormIcon}
-            />
+            <IconPicker label="Icon" value={formIcon} onChange={setFormIcon} />
 
             <Select
               label="Type"
@@ -283,7 +293,11 @@ export default function AdminCategoriesPage() {
 
           {/* Actions */}
           <div className="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4">
-            <Button variant="ghost" onClick={closeModal} disabled={isSubmitting}>
+            <Button
+              variant="ghost"
+              onClick={closeModal}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button
@@ -298,5 +312,5 @@ export default function AdminCategoriesPage() {
         </Modal>
       </div>
     </AuthenticatedLayout>
-  )
+  );
 }

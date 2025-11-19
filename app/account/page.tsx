@@ -22,7 +22,6 @@ import Loader from '@/components/ui/Loader';
 import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout';
 
 export default function AccountPage() {
-
   // Profile state
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -144,14 +143,18 @@ export default function AccountPage() {
     <AuthenticatedLayout>
       {/* Page Header */}
       <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-        <div className="container-custom py-6">
-          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Account Settings</h1>
-          <p className="mt-2 text-neutral-600 dark:text-neutral-400">Manage your profile and preferences</p>
+        <div className="py-6">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+            Account Settings
+          </h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            Manage your profile and preferences
+          </p>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="container-custom py-8">
+      <div className="py-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -321,13 +324,17 @@ export default function AccountPage() {
               </h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-neutral-600 dark:text-neutral-400">User ID:</dt>
+                  <dt className="text-neutral-600 dark:text-neutral-400">
+                    User ID:
+                  </dt>
                   <dd className="font-mono text-xs text-neutral-900 dark:text-neutral-100">
                     {profile.id}
                   </dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-neutral-600 dark:text-neutral-400">Member since:</dt>
+                  <dt className="text-neutral-600 dark:text-neutral-400">
+                    Member since:
+                  </dt>
                   <dd className="text-neutral-900 dark:text-neutral-100">
                     {new Date(profile.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',

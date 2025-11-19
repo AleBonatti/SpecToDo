@@ -6,13 +6,16 @@ import { Inbox, AlertCircle } from 'lucide-react';
 import { useItems } from '@/lib/hooks/useItems';
 import { useCategories } from '@/lib/hooks/useCategories';
 import { useActions } from '@/lib/hooks/useActions';
-import { useItemStats } from '@/lib/hooks/useItemStats';
 import { useItemActions } from '@/lib/hooks/useItemActions';
 import { useItemFilters } from '@/lib/hooks/useItemFilters';
 import { useKeyboardShortcut } from '@/lib/hooks/useKeyboardShortcut';
 import { useBulkSelection } from '@/lib/hooks/useBulkSelection';
 import { useToast } from '@/lib/hooks/useToast';
-import { getCategoryLabel, getCategoryIcon, getActionLabel } from '@/lib/utils/item-helpers';
+import {
+  getCategoryLabel,
+  getCategoryIcon,
+  getActionLabel,
+} from '@/lib/utils/item-helpers';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
@@ -24,7 +27,6 @@ import ListItem from '@/components/ui/ListItem';
 import ItemDetailPanel from '@/components/ui/ItemDetailPanel';
 import ListItemSkeleton from '@/components/ui/ListItemSkeleton';
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp';
-import ItemStats from '@/components/features/ItemStats';
 import ItemFilters from '@/components/features/ItemFilters';
 import BulkActionsToolbar from '@/components/features/BulkActionsToolbar';
 import QuickAddWidget from '@/components/features/QuickAddWidget';
@@ -87,9 +89,6 @@ export default function HomePage() {
     setSelectedPriorities,
     filteredItems,
   } = useItemFilters(allItems);
-
-  // Calculate stats
-  const stats = useItemStats(allItems);
 
   // Toast notifications
   const toast = useToast();
@@ -158,7 +157,9 @@ export default function HomePage() {
           if (!response.ok) throw new Error('Failed to update');
         })
       );
-      toast.success(`Changed category for ${bulkSelection.selectedCount} items`);
+      toast.success(
+        `Changed category for ${bulkSelection.selectedCount} items`
+      );
       bulkSelection.clearSelection();
       // Refresh items to show new categories
       window.location.reload();
@@ -168,7 +169,10 @@ export default function HomePage() {
   };
 
   // Quick add handler
-  const handleQuickAdd = async (data: { title: string; categoryId: string }) => {
+  const handleQuickAdd = async (data: {
+    title: string;
+    categoryId: string;
+  }) => {
     await createNewItem({
       ...data,
       status: 'todo',
@@ -179,7 +183,7 @@ export default function HomePage() {
   return (
     <AuthenticatedLayout>
       {/* Main content */}
-      <div className="container-custom py-8">
+      <div>
         {/* Error message */}
         {error && (
           <motion.div
@@ -227,12 +231,6 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Stats section */}
-              <ItemStats stats={stats} />
-
-              {/* Divider */}
-              <div className="divider" />
-
               {/* Filters and Actions section */}
               <ItemFilters
                 categories={categories}
@@ -280,7 +278,7 @@ export default function HomePage() {
                 />
               ) : (
                 <motion.div
-                  className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+                  className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
                   layout
                 >
                   <AnimatePresence mode="popLayout">
@@ -297,8 +295,14 @@ export default function HomePage() {
                           id={item.id}
                           title={item.title}
                           action={getActionLabel(item.actionId, dbActions)}
-                          category={getCategoryLabel(item.categoryId, dbCategories)}
-                          categoryIcon={getCategoryIcon(item.categoryId, dbCategories)}
+                          category={getCategoryLabel(
+                            item.categoryId,
+                            dbCategories
+                          )}
+                          categoryIcon={getCategoryIcon(
+                            item.categoryId,
+                            dbCategories
+                          )}
                           done={item.status === 'done'}
                           description={item.description || undefined}
                           priority={item.priority}
@@ -405,7 +409,9 @@ export default function HomePage() {
                   label="Target Date (optional)"
                   type="date"
                   value={itemActions.formTargetDate}
-                  onChange={(e) => itemActions.setFormTargetDate(e.target.value)}
+                  onChange={(e) =>
+                    itemActions.setFormTargetDate(e.target.value)
+                  }
                   fullWidth
                 />
               </div>
@@ -450,7 +456,11 @@ export default function HomePage() {
           <Button
             variant="primary"
             onClick={itemActions.handleSubmitForm}
-            disabled={!itemActions.formTitle.trim() || !itemActions.formCategory || itemActions.isSubmitting}
+            disabled={
+              !itemActions.formTitle.trim() ||
+              !itemActions.formCategory ||
+              itemActions.isSubmitting
+            }
             loading={itemActions.isSubmitting}
           >
             {itemActions.editingItem ? 'Save Changes' : 'Add Item'}
@@ -482,10 +492,19 @@ export default function HomePage() {
             ? {
                 id: itemActions.detailPanelItem.id,
                 title: itemActions.detailPanelItem.title,
-                action: getActionLabel(itemActions.detailPanelItem.actionId, dbActions),
-                category: getCategoryLabel(itemActions.detailPanelItem.categoryId, dbCategories),
+                action: getActionLabel(
+                  itemActions.detailPanelItem.actionId,
+                  dbActions
+                ),
+                category: getCategoryLabel(
+                  itemActions.detailPanelItem.categoryId,
+                  dbCategories
+                ),
                 categoryId: itemActions.detailPanelItem.categoryId,
-                categoryIcon: getCategoryIcon(itemActions.detailPanelItem.categoryId, dbCategories),
+                categoryIcon: getCategoryIcon(
+                  itemActions.detailPanelItem.categoryId,
+                  dbCategories
+                ),
                 done: itemActions.detailPanelItem.status === 'done',
                 description: itemActions.detailPanelItem.description,
                 priority: itemActions.detailPanelItem.priority,

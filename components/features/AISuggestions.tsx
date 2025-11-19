@@ -19,6 +19,7 @@ export interface AISuggestionsProps {
   title: string;
   category?: string;
   categoryId?: string;
+  location?: string;
   onClose?: () => void;
 }
 
@@ -27,6 +28,7 @@ export default function AISuggestions({
   title,
   category,
   categoryId,
+  location,
   onClose,
 }: AISuggestionsProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -50,6 +52,7 @@ export default function AISuggestions({
           title,
           category,
           categoryId,
+          location,
         }),
       });
 
@@ -143,7 +146,7 @@ export default function AISuggestions({
 
             {/* Suggestions List */}
             {!loading && !error && suggestions.length > 0 && (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {suggestions.map((suggestion, index) => (
                   <motion.div
                     key={index}

@@ -5,12 +5,7 @@ import { z } from 'zod';
 import { getDb, categories } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { imageToolRegistry } from '@/lib/ai/image-tools';
-import { MovieImageTool } from '@/lib/ai/tools/movie-tool';
-import { GameImageTool } from '@/lib/ai/tools/game-tool';
-
-// Register tools
-imageToolRegistry.register('cinema', new MovieImageTool());
-imageToolRegistry.register('game', new GameImageTool());
+import '@/lib/ai/register-tools'; // Register all image tools
 
 /**
  * AI Suggestions API Route
@@ -25,13 +20,15 @@ const requestSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   category: z.string().optional(),
   categoryId: z.string().optional(),
+  location: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
     const body = await request.json();
-    const { action, title, category, categoryId } = requestSchema.parse(body);
+    const { action, title, category, categoryId, location } =
+      requestSchema.parse(body);
 
     // Fetch category content_type from database if categoryId provided
     let contentType = 'generic';
@@ -68,6 +65,7 @@ Given the following activity:
 Action: ${action}
 Title: ${title}
 ${category ? `Category: ${category}` : ''}
+${location ? `Location: ${location}` : ''}
 Content Type: ${contentType}
 
 Please suggest 3 similar ${action} activities or content that the user might enjoy.
@@ -136,9 +134,18 @@ Example format:
         // Use the image tool registry to get the right image
         if (suggestion.title) {
           try {
+            // For place-based content types (place, travel, restaurant), append location to search query
+            const searchQuery =
+              (contentType === 'place' ||
+                contentType === 'travel' ||
+                contentType === 'restaurant') &&
+              location
+                ? `${suggestion.title} ${location}`
+                : suggestion.title;
+
             imageUrl = await imageToolRegistry.getImage(
               contentType,
-              suggestion.title,
+              searchQuery,
               suggestion.year
             );
           } catch (imageError) {

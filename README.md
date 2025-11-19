@@ -21,7 +21,7 @@ A minimalist and delightful app to keep track of future activities—movies to w
 - **Database**: Supabase (PostgreSQL with RLS)
 - **Authentication**: Supabase Auth
 - **AI Integration**: OpenAI GPT-4o-mini (via Vercel AI SDK)
-- **Image APIs**: TMDB (movies), IGDB (games)
+- **Image APIs**: TMDB (movies), IGDB (games), Spotify (music), Google Books (books), Google Places (places)
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
 - **Package Manager**: pnpm
@@ -73,12 +73,32 @@ A minimalist and delightful app to keep track of future activities—movies to w
    TMDB_API_KEY=your-tmdb-api-key-here
    IGDB_CLIENT_ID=your-twitch-client-id-here
    IGDB_CLIENT_SECRET=your-twitch-client-secret-here
+   SPOTIFY_CLIENT_ID=your-spotify-client-id-here
+   SPOTIFY_CLIENT_SECRET=your-spotify-client-secret-here
+   GOOGLE_BOOKS_API_KEY=your-google-books-api-key-here  # Optional: works without key (1000 req/day)
+   GOOGLE_PLACES_API_KEY=your-google-places-api-key-here
    ```
 
    **API Key Setup:**
    - OpenAI: Get your API key from https://platform.openai.com/api-keys
    - TMDB: Get your API key from https://www.themoviedb.org/settings/api
    - IGDB: Register your app at https://dev.twitch.tv/console/apps (requires Twitch account)
+   - Spotify: Register your app at https://developer.spotify.com/dashboard
+   - Google Books: Optional, works without key. For higher limits: https://console.cloud.google.com/apis/credentials
+   - Google Places: **Requires billing enabled** (includes $200 monthly credit). See setup steps below.
+
+   **Google Places API Setup (Required for place images):**
+
+   The Places API requires billing to be enabled on your Google Cloud project:
+
+   1. Go to https://console.cloud.google.com/billing and enable billing
+   2. Enable Places API (New) at https://console.cloud.google.com/apis/library/places-backend.googleapis.com
+   3. Create or select an API key at https://console.cloud.google.com/apis/credentials
+   4. **Important**: For API key restrictions:
+      - If using "Application restrictions", select "None" (server-side calls)
+      - Do NOT use "HTTP referrers" (that's for client-side only)
+      - Or use "IP addresses" and add your server IPs
+   5. You get $200 monthly free credit which covers typical usage
 
 5. **Generate TypeScript types from Supabase**
    ```bash
