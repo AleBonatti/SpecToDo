@@ -85,9 +85,7 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
             icon={<Plus className="h-4 w-4" />}
             onClick={onAddClick}
             disabled={selectionMode}
-          >
-            Add New Item
-          </Button>
+          ></Button>
         </div>
       </div>
 

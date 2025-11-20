@@ -11,6 +11,7 @@ import {
   Zap,
   Moon,
   Sun,
+  Cog,
 } from 'lucide-react';
 import Container from './Container';
 import Button from '../ui/Button';
@@ -46,24 +47,26 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                 alt="Everly"
               />
               <span className="text-xl font-normal">Everly</span>
-              <span className="text-base">
+              <span className="text-base text-secondary">
                 ... a list of things worth doing
               </span>
             </Link>
 
             {/* Navigation */}
             {isAuthenticated && (
-              <nav className="flex items-center gap-2">
+              <nav className="flex items-center gap-6">
                 <Tooltip content="Dashboard">
                   <Link href="/">
                     <Button
                       variant="ghost"
                       size="sm"
                       style={{
-                        color: pathname === '/' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                        color:
+                          pathname === '/'
+                            ? 'rgb(var(--primary))'
+                            : 'rgb(var(--secondary))',
                       }}
                     >
-                      <Home className="h-4 w-4" />
                       <span className="hidden sm:inline">Dashboard</span>
                     </Button>
                   </Link>
@@ -76,10 +79,12 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                           variant="ghost"
                           size="sm"
                           style={{
-                            color: pathname === '/admin/categories' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                            color:
+                              pathname === '/admin/categories'
+                                ? 'rgb(var(--primary))'
+                                : 'rgb(var(--secondary))',
                           }}
                         >
-                          <FolderTree className="h-4 w-4" />
                           <span className="hidden sm:inline">Categories</span>
                         </Button>
                       </Link>
@@ -90,10 +95,12 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                           variant="ghost"
                           size="sm"
                           style={{
-                            color: pathname === '/admin/actions' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                            color:
+                              pathname === '/admin/actions'
+                                ? 'rgb(var(--primary))'
+                                : 'rgb(var(--secondary))',
                           }}
                         >
-                          <Zap className="h-4 w-4" />
                           <span className="hidden sm:inline">Actions</span>
                         </Button>
                       </Link>
@@ -104,52 +111,47 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                           variant="ghost"
                           size="sm"
                           style={{
-                            color: pathname === '/admin/users' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                            color:
+                              pathname === '/admin/users'
+                                ? 'rgb(var(--primary))'
+                                : 'rgb(var(--secondary))',
                           }}
                         >
-                          <Users className="h-4 w-4" />
                           <span className="hidden sm:inline">Users</span>
                         </Button>
                       </Link>
                     </Tooltip>
                   </>
                 )}
-                <Tooltip content="Account">
-                  <Link href="/account">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      style={{
-                        color: pathname === '/account' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
-                      }}
-                    >
-                      <Key className="h-4 w-4" />
-                      <span className="hidden sm:inline">Account</span>
-                    </Button>
-                  </Link>
-                </Tooltip>
-                <Tooltip
-                  content={theme === 'light' ? 'Dark mode' : 'Light mode'}
-                >
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleTheme}
-                    aria-label="Toggle theme"
+                <div className="flex gap-2">
+                  <Tooltip
+                    content={theme === 'light' ? 'Dark mode' : 'Light mode'}
                   >
-                    {theme === 'light' ? (
-                      <Moon className="h-4 w-4" />
-                    ) : (
-                      <Sun className="h-4 w-4" />
-                    )}
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Logout">
-                  <Button variant="ghost" size="sm" onClick={onLogout}>
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </Button>
-                </Tooltip>
+                    <Button
+                      variant={theme === 'light' ? 'primary' : 'secondary'}
+                      onClick={toggleTheme}
+                      aria-label="Toggle theme"
+                    >
+                      {theme === 'light' ? (
+                        <Moon className="h-4 w-4" />
+                      ) : (
+                        <Sun className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Account">
+                    <Link href="/account">
+                      <Button variant="primary">
+                        <Cog className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </Tooltip>
+                  <Tooltip content="Logout">
+                    <Button variant="primary" onClick={onLogout}>
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  </Tooltip>
+                </div>
               </nav>
             )}
           </div>

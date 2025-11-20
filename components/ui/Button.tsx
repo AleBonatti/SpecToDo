@@ -40,9 +40,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: 'h-9 px-3 text-sm',
-      md: 'h-11 px-4 text-base',
-      lg: 'h-12 px-6 text-lg',
+      sm: 'h-6 px-1 text-sm',
+      md: 'h-8 px-2 text-base',
+      lg: 'h-10 px-6 text-lg',
     };
 
     const getBackgroundColor = () => {
