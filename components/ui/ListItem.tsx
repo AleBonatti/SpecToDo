@@ -83,7 +83,7 @@ const ListItem: React.FC<ListItemProps> = ({
         }
       }}
       className={cn(
-        'group relative rounded-xl bg-white p-5 transition-all hover:-translate-y-0.5 cursor-pointer dark:bg-neutral-900',
+        'group relative rounded-xl bg-white overflow-hidden transition-all hover:-translate-y-0.5 cursor-pointer dark:bg-neutral-900',
         done && 'opacity-70',
         selected && 'ring-2 ring-primary-500',
         className
@@ -120,89 +120,88 @@ const ListItem: React.FC<ListItemProps> = ({
         </div>
       )}
 
-      {/* Priority badge in top right corner (white) */}
-      {priority && priorityStyle && (
-        <div className="absolute top-3 right-3 z-10">
-          <Badge
-            text={priorityStyle.label}
-            variant={
-              priority === 'high'
-                ? 'danger'
-                : priority === 'medium'
-                  ? 'accent'
-                  : 'secondary'
-            }
-            icon={PriorityIcon}
-            className="bg-white text-neutral-900 shadow-sm dark:bg-neutral-100"
-            style={{ backgroundColor: 'white', color: 'rgb(var(--primary))' }}
+      {/* Image Section - Upper half with max 200px height */}
+      <div className="relative w-full overflow-hidden rounded-t-xl" style={{ maxHeight: '200px', minHeight: '200px' }}>
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full h-full object-cover"
+            loading="lazy"
           />
-        </div>
-      )}
+        ) : (
+          <div className="w-full h-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+            <Package className="h-16 w-16 text-neutral-300 dark:text-neutral-600" />
+          </div>
+        )}
 
-      {/* Done toggle button in top left */}
-      <div className={cn('mb-3 flex items-start justify-between gap-2', selectionMode && 'pl-8')}>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleDone(id, !done);
-          }}
-          className={cn(
-            'flex-0 rounded-full p-1 transition-colors',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-            done
-              ? 'text-success-600 hover:text-success-700'
-              : 'text-neutral-400 hover:text-neutral-600'
-          )}
-          aria-label={done ? 'Mark as not done' : 'Mark as done'}
-        >
-          {done ? (
-            <Check className="h-5 w-5" aria-hidden="true" />
-          ) : (
-            <Circle className="h-5 w-5" aria-hidden="true" />
-          )}
-        </button>
+        {/* Priority badge in top right corner (white) - Above image */}
+        {priority && priorityStyle && (
+          <div className="absolute top-3 right-3 z-10">
+            <Badge
+              text={priorityStyle.label}
+              variant={
+                priority === 'high'
+                  ? 'danger'
+                  : priority === 'medium'
+                    ? 'accent'
+                    : 'secondary'
+              }
+              icon={PriorityIcon}
+              className="bg-white text-neutral-900 shadow-sm dark:bg-neutral-100"
+              style={{ backgroundColor: 'white', color: 'rgb(var(--primary))' }}
+            />
+          </div>
+        )}
+
+        {/* Done toggle button in top left - Above image */}
+        <div className="absolute top-3 left-3 z-10">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleDone(id, !done);
+            }}
+            className={cn(
+              'rounded-full p-1.5 transition-colors bg-white/90 backdrop-blur-sm dark:bg-neutral-900/90',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+              done
+                ? 'text-success-600 hover:text-success-700'
+                : 'text-neutral-400 hover:text-neutral-600'
+            )}
+            aria-label={done ? 'Mark as not done' : 'Mark as done'}
+          >
+            {done ? (
+              <Check className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Circle className="h-5 w-5" aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Image and Content Layout */}
-      <div className={cn('flex flex-col gap-3')}>
-        <div className={cn('flex gap-3', imageUrl && 'flex-row')}>
-          {/* Image */}
-          {imageUrl && (
-            <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-              <img
-                src={imageUrl}
-                alt={title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
+      {/* Content Section - Below image */}
+      <div className={cn('flex flex-col gap-3 p-5', selectionMode && 'pt-8')}>
+        {/* Title with optional action */}
+        <h3
+          className={cn(
+            'text-base font-semibold text-neutral-900 dark:text-neutral-100'
           )}
+        >
+          {action && (
+            <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
+              {action}
+            </span>
+          )}
+          <span className={cn(done && 'line-through')}>{title}</span>
+        </h3>
 
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            {/* Title with optional action */}
-            <h3
-              className={cn(
-                'mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100'
-              )}
-            >
-              {action && (
-                <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
-                  {action}
-                </span>
-              )}
-              <span className={cn(done && 'line-through')}>{title}</span>
-            </h3>
-
-            {/* Description (if exists) */}
-            {description && (
-              <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
-                {description}
-              </p>
-            )}
-          </div>
-        </div>
+        {/* Description (if exists) */}
+        {description && (
+          <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+            {description}
+          </p>
+        )}
 
         {/* Category badge in bottom right corner (black) */}
         <div className="flex justify-end">
