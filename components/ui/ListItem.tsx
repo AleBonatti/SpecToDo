@@ -1,13 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  Check,
-  Circle,
-  AlertCircle,
-  ArrowUp,
-  Package,
-} from 'lucide-react';
+import { Check, Circle, AlertCircle, ArrowUp, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getIconComponent } from '@/lib/utils/icon-utils';
 import Badge from './Badge';
@@ -121,7 +115,10 @@ const ListItem: React.FC<ListItemProps> = ({
       )}
 
       {/* Image Section - Upper half with max 200px height */}
-      <div className="relative w-full overflow-hidden rounded-t-xl" style={{ maxHeight: '200px', minHeight: '200px' }}>
+      <div
+        className="relative w-full overflow-hidden rounded-t-xl"
+        style={{ maxHeight: '200px', minHeight: '200px' }}
+      >
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -134,7 +131,6 @@ const ListItem: React.FC<ListItemProps> = ({
             <Package className="h-16 w-16 text-neutral-300 dark:text-neutral-600" />
           </div>
         )}
-
         {/* Priority badge in top right corner (white) - Above image */}
         {priority && priorityStyle && (
           <div className="absolute top-3 right-3 z-10">
@@ -153,7 +149,6 @@ const ListItem: React.FC<ListItemProps> = ({
             />
           </div>
         )}
-
         {/* Done toggle button in top left - Above image */}
         <div className="absolute top-3 left-3 z-10">
           <button
@@ -181,24 +176,24 @@ const ListItem: React.FC<ListItemProps> = ({
       </div>
 
       {/* Content Section - Below image */}
-      <div className={cn('flex flex-col gap-3 p-5', selectionMode && 'pt-8')}>
+      <div className={cn('px-6 py-3', selectionMode && 'pt-8')}>
         {/* Title with optional action */}
+        {action && (
+          <span className="text-sm font-normal text-accent dark:text-accent-400">
+            {action}
+          </span>
+        )}
         <h3
           className={cn(
-            'text-base font-semibold text-neutral-900 dark:text-neutral-100'
+            'text-base font-medium text-primary dark:text-neutral-100'
           )}
         >
-          {action && (
-            <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
-              {action}
-            </span>
-          )}
           <span className={cn(done && 'line-through')}>{title}</span>
         </h3>
 
         {/* Description (if exists) */}
         {description && (
-          <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <p className="mt-3 line-clamp-2 text-xs text-secondary dark:text-neutral-400">
             {description}
           </p>
         )}

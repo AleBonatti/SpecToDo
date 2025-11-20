@@ -38,6 +38,7 @@ export default function HomePage() {
     items: allItems,
     loading,
     error,
+    refresh,
     createNewItem,
     updateExistingItem,
     deleteExistingItem,
@@ -205,7 +206,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {Array.from({ length: 6 }).map((_, index) => (
                 <ListItemSkeleton key={index} />
               ))}
@@ -513,6 +514,8 @@ export default function HomePage() {
                 location: itemActions.detailPanelItem.location,
                 note: itemActions.detailPanelItem.note,
                 targetDate: itemActions.detailPanelItem.targetDate,
+                imageUrl: itemActions.detailPanelItem.imageUrl,
+                metadata: itemActions.detailPanelItem.metadata,
                 createdAt: itemActions.detailPanelItem.createdAt,
                 updatedAt: itemActions.detailPanelItem.updatedAt,
               }
@@ -520,6 +523,7 @@ export default function HomePage() {
         }
         onEdit={itemActions.handleEditFromPanel}
         onDelete={itemActions.handleDeleteFromPanel}
+        onRefresh={refresh}
       />
 
       {/* Keyboard shortcuts help */}
