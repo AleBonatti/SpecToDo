@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { Loader2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import React from 'react';
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'danger'
-  size?: 'sm' | 'md' | 'lg'
-  loading?: boolean
-  icon?: React.ReactNode
+  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  icon?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -27,36 +27,37 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+      'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
     const variants = {
       primary: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
       secondary: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
       accent: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
-      outline: 'bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-800 dark:hover:bg-neutral-800',
-      ghost: 'hover:bg-neutral-100 dark:hover:bg-neutral-800',
+      outline:
+        'bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-800 dark:hover:bg-neutral-800',
+      ghost: 'hover:bg-neutral-200 dark:hover:bg-neutral-800',
       danger: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
-    }
+    };
 
     const sizes = {
       sm: 'h-9 px-3 text-sm',
       md: 'h-11 px-4 text-base',
       lg: 'h-12 px-6 text-lg',
-    }
+    };
 
     const getBackgroundColor = () => {
-      if (variant === 'primary') return 'rgb(var(--primary))'
-      if (variant === 'secondary') return 'rgb(var(--secondary))'
-      if (variant === 'accent') return 'rgb(var(--accent))'
-      if (variant === 'danger') return 'rgb(var(--danger))'
-      return undefined
-    }
+      if (variant === 'primary') return 'rgb(var(--primary))';
+      if (variant === 'secondary') return 'rgb(var(--secondary))';
+      if (variant === 'accent') return 'rgb(var(--accent))';
+      if (variant === 'danger') return 'rgb(var(--danger))';
+      return undefined;
+    };
 
     const getTextColor = () => {
-      if (variant === 'outline') return 'rgb(var(--primary))'
-      if (variant === 'ghost') return 'rgb(var(--secondary))'
-      return undefined
-    }
+      if (variant === 'outline') return 'rgb(var(--primary))';
+      if (variant === 'ghost') return 'rgb(var(--secondary))';
+      return undefined;
+    };
 
     return (
       <button
@@ -78,10 +79,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           </>
         )}
       </button>
-    )
+    );
   }
-)
+);
 
-Button.displayName = 'Button'
+Button.displayName = 'Button';
 
-export default Button
+export default Button;
