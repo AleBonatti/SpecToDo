@@ -41,7 +41,7 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
   const priorityVariants = {
     high: 'danger' as const,
     medium: 'accent' as const,
-    low: 'neutral' as const,
+    low: 'secondary' as const,
   };
 
   const handlePriorityToggle = (priority: string) => {
@@ -85,9 +85,7 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
             icon={<Plus className="h-4 w-4" />}
             onClick={onAddClick}
             disabled={selectionMode}
-          >
-            Add New Item
-          </Button>
+          ></Button>
         </div>
       </div>
 

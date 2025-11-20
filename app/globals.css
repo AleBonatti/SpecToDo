@@ -6,63 +6,19 @@
   /* Typography */
   --font-sans: var(--font-space-grotesk), system-ui, -apple-system, sans-serif;
 
-  /* Brand Colors - Light Mode */
-  --color-primary-50: #f5f3ff;
-  --color-primary-100: #ede9fe;
-  --color-primary-200: #ddd6fe;
-  --color-primary-300: #c4b5fd;
-  --color-primary-400: #a78bfa;
-  --color-primary-500: #8b5cf6;
-  --color-primary-600: #251ad1;
-  --color-primary-700: #1e16a8;
-  --color-primary-800: #1a1280;
-  --color-primary-900: #150e5c;
-  --color-primary-950: #0d0840;
+  /* Simplified Brand Colors - Light Mode */
+  --color-primary: #292929; /* Dark grey for text */
+  --color-secondary: #8F8F8F; /* Light grey for secondary elements */
+  --color-accent: #00BA79; /* Green for accents */
 
-  --color-accent-50: #fff7ed;
-  --color-accent-100: #ffedd5;
-  --color-accent-200: #fed7aa;
-  --color-accent-300: #fdba74;
-  --color-accent-400: #fb923c;
-  --color-accent-500: #fea703;
-  --color-accent-600: #ea8c00;
-  --color-accent-700: #c77100;
-  --color-accent-800: #9c5a02;
-  --color-accent-900: #7c4a06;
-  --color-accent-950: #4a2804;
+  /* Status Colors */
+  --color-danger: #e61800;
+  --color-success: #22c55e;
 
-  --color-danger-50: #fef2f2;
-  --color-danger-100: #fee2e2;
-  --color-danger-200: #fecaca;
-  --color-danger-300: #fca5a5;
-  --color-danger-400: #f87171;
-  --color-danger-500: #ef4444;
-  --color-danger-600: #e61800;
-  --color-danger-700: #c21400;
-  --color-danger-800: #9b1000;
-  --color-danger-900: #7f0d00;
-  --color-danger-950: #4a0800;
-
-  --color-success-50: #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-200: #bbf7d0;
-  --color-success-300: #86efac;
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
-  --color-success-800: #166534;
-  --color-success-900: #14532d;
-  --color-success-950: #052e16;
-
+  /* Neutral Colors */
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f5f5f5;
   --color-neutral-200: #e5e5e5;
-  --color-neutral-300: #d4d4d4;
-  --color-neutral-400: #a3a3a3;
-  --color-neutral-500: #737373;
-  --color-neutral-600: #525252;
-  --color-neutral-700: #404040;
   --color-neutral-800: #262626;
   --color-neutral-900: #171717;
   --color-neutral-950: #0a0a0a;
@@ -70,36 +26,22 @@
 
 @layer base {
   :root {
-    /* Color System for custom utilities */
-    --primary: 37 26 209; /* #251ad1 */
-    --primary-light: 139 92 246;
-    --primary-dark: 21 14 92;
-
-    --accent: 254 167 3; /* #fea703 */
-    --accent-light: 251 146 60;
-    --accent-dark: 156 90 2;
+    /* Simplified Color System */
+    --primary: 41 41 41; /* #292929 - Dark grey text */
+    --secondary: 143 143 143; /* #8F8F8F - Light grey */
+    --accent: 0 186 121; /* #00BA79 - Green */
 
     --danger: 230 24 0; /* #e61800 */
-    --danger-light: 248 113 113;
-    --danger-dark: 122 13 0;
-
-    --success: 34 197 94;
-    --success-light: 74 222 128;
-    --success-dark: 21 128 61;
+    --success: 34 197 94; /* #22c55e */
 
     --neutral-50: 250 250 250;
     --neutral-100: 245 245 245;
     --neutral-200: 229 229 229;
-    --neutral-300: 212 212 212;
-    --neutral-400: 163 163 163;
-    --neutral-500: 115 115 115;
-    --neutral-600: 82 82 82;
-    --neutral-700: 64 64 64;
     --neutral-800: 38 38 38;
     --neutral-900: 23 23 23;
 
     --background: 250 250 250;
-    --foreground: 23 23 23;
+    --foreground: 41 41 41; /* Using primary color */
 
     /* Semantic Colors */
     --card-bg: 255 255 255;
@@ -113,32 +55,18 @@
   }
 
   .dark {
-    /* Color System for dark mode */
-    --primary: 139 92 246; /* Lighter primary for better contrast */
-    --primary-light: 196 181 253;
-    --primary-dark: 109 40 217;
+    /* Simplified Dark Mode Colors */
+    --primary: 250 250 250; /* Light text for dark mode */
+    --secondary: 163 163 163; /* Lighter grey for dark mode */
+    --accent: 0 186 121; /* Keep same green */
 
-    --accent: 251 146 60; /* Lighter accent */
-    --accent-light: 253 186 116;
-    --accent-dark: 234 88 12;
-
-    --danger: 248 113 113; /* Lighter danger */
-    --danger-light: 252 165 165;
-    --danger-dark: 220 38 38;
-
-    --success: 74 222 128; /* Lighter success */
-    --success-light: 134 239 172;
-    --success-dark: 34 197 94;
+    --danger: 248 113 113; /* Lighter danger for dark mode */
+    --success: 74 222 128; /* Lighter success for dark mode */
 
     /* Inverted neutral colors */
     --neutral-50: 10 10 10;
     --neutral-100: 23 23 23;
     --neutral-200: 38 38 38;
-    --neutral-300: 64 64 64;
-    --neutral-400: 115 115 115;
-    --neutral-500: 163 163 163;
-    --neutral-600: 212 212 212;
-    --neutral-700: 229 229 229;
     --neutral-800: 245 245 245;
     --neutral-900: 250 250 250;
 
@@ -168,7 +96,8 @@
   }
 
   body {
-    @apply text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50;
+    color: rgb(var(--primary));
+    @apply dark:bg-neutral-950;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
@@ -206,12 +135,12 @@
 
   /* Selection */
   ::selection {
-    background-color: rgb(var(--primary) / 0.2);
+    background-color: rgb(var(--accent) / 0.2);
     color: rgb(var(--primary));
   }
 
   ::-moz-selection {
-    background-color: rgb(var(--primary) / 0.2);
+    background-color: rgb(var(--accent) / 0.2);
     color: rgb(var(--primary));
   }
 
@@ -262,23 +191,12 @@
     @apply bg-neutral-900/80 backdrop-blur-lg;
   }
 
-  /* Gradient Text */
-  .text-gradient-primary {
-    background-image: linear-gradient(
-      135deg,
-      rgb(var(--primary)),
-      rgb(var(--primary-light))
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
-
+  /* Gradient Text - Simplified */
   .text-gradient-accent {
     background-image: linear-gradient(
       135deg,
       rgb(var(--accent)),
-      rgb(var(--accent-light))
+      rgb(0 186 121 / 0.8)
     );
     background-clip: text;
     -webkit-background-clip: text;
@@ -294,31 +212,25 @@
     @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
   }
 
-  /* Button Gradients */
-  .btn-gradient-primary {
-    background-image: linear-gradient(
-      135deg,
-      rgb(var(--primary)),
-      rgb(var(--primary-light))
-    );
-    @apply text-white shadow-md transition-shadow;
+  /* Button Styles - Simplified */
+  .btn-primary {
+    background-color: rgb(var(--primary));
+    @apply text-white shadow-sm transition-all hover:shadow-md;
   }
 
-  .btn-gradient-primary:hover {
-    box-shadow: 0 0 20px rgba(var(--primary) / 0.3);
+  .btn-secondary {
+    background-color: rgb(var(--secondary));
+    @apply text-white shadow-sm transition-all hover:shadow-md;
   }
 
-  .btn-gradient-accent {
-    background-image: linear-gradient(
-      135deg,
-      rgb(var(--accent)),
-      rgb(var(--accent-light))
-    );
-    @apply text-white shadow-md transition-shadow;
+  .btn-accent {
+    background-color: rgb(var(--accent));
+    @apply text-white shadow-sm transition-all hover:shadow-md;
   }
 
-  .btn-gradient-accent:hover {
-    box-shadow: 0 0 20px rgba(var(--accent) / 0.3);
+  .btn-outline-primary {
+    @apply bg-white text-primary border border-neutral-200 shadow-sm transition-all hover:shadow-md;
+    color: rgb(var(--primary));
   }
 
   /* Shimmer Loading Effect */
@@ -344,49 +256,29 @@
     animation: fadeIn 0.3s ease-in-out;
   }
 
-  /* Badge Styles - Legacy (kept for backwards compatibility, use Badge component instead) */
+  /* Badge Styles - Simplified */
   .badge {
-    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium;
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium text-white;
   }
 
   .badge-primary {
-    background-color: rgb(var(--primary) / 0.1);
-    color: rgb(var(--primary-dark));
+    background-color: rgb(var(--primary));
   }
 
-  .dark .badge-primary {
-    background-color: rgb(var(--primary) / 0.05);
-    color: rgb(139 92 246 / 1); /* primary-400 */
+  .badge-secondary {
+    background-color: rgb(var(--secondary));
   }
 
   .badge-accent {
-    background-color: rgb(var(--accent) / 0.1);
-    color: rgb(var(--accent-dark));
-  }
-
-  .dark .badge-accent {
-    background-color: rgb(var(--accent) / 0.05);
-    color: rgb(254 167 3 / 0.8); /* accent-400 */
+    background-color: rgb(var(--accent));
   }
 
   .badge-success {
-    background-color: rgb(var(--success) / 0.1);
-    color: rgb(var(--success-dark));
-  }
-
-  .dark .badge-success {
-    background-color: rgb(var(--success) / 0.05);
-    color: rgb(34 197 94 / 0.8); /* success-400 */
+    background-color: rgb(var(--success));
   }
 
   .badge-danger {
-    background-color: rgb(var(--danger) / 0.1);
-    color: rgb(var(--danger-dark));
-  }
-
-  .dark .badge-danger {
-    background-color: rgb(var(--danger) / 0.05);
-    color: rgb(248 113 113 / 0.8); /* danger-400 */
+    background-color: rgb(var(--danger));
   }
 
   /* Grid Patterns */
@@ -452,12 +344,12 @@
 
   /* Link Styles */
   .link {
-    color: rgb(var(--primary));
+    color: rgb(var(--accent));
     @apply underline-offset-4 hover:underline transition-colors;
   }
 
   .link:hover {
-    color: rgb(var(--primary-dark));
+    color: rgb(0 186 121 / 0.8);
   }
 
   /* Divider */
