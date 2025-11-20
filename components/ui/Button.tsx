@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   icon?: React.ReactNode
@@ -30,10 +30,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
 
     const variants = {
-      primary: 'bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600',
-      secondary: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700 dark:border-neutral-700',
-      ghost: 'hover:bg-neutral-100 text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
-      danger: 'bg-danger-600 text-white hover:bg-danger-700 dark:bg-danger-500 dark:hover:bg-danger-600',
+      primary: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
+      secondary: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
+      accent: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
+      outline: 'bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-800 dark:hover:bg-neutral-800',
+      ghost: 'hover:bg-neutral-100 dark:hover:bg-neutral-800',
+      danger: 'text-white shadow-sm hover:shadow-md hover:opacity-90',
     }
 
     const sizes = {
@@ -42,10 +44,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'h-12 px-6 text-lg',
     }
 
+    const getBackgroundColor = () => {
+      if (variant === 'primary') return 'rgb(var(--primary))'
+      if (variant === 'secondary') return 'rgb(var(--secondary))'
+      if (variant === 'accent') return 'rgb(var(--accent))'
+      if (variant === 'danger') return 'rgb(var(--danger))'
+      return undefined
+    }
+
+    const getTextColor = () => {
+      if (variant === 'outline') return 'rgb(var(--primary))'
+      if (variant === 'ghost') return 'rgb(var(--secondary))'
+      return undefined
+    }
+
     return (
       <button
         ref={ref}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
+        style={{
+          backgroundColor: getBackgroundColor(),
+          color: getTextColor(),
+        }}
         disabled={disabled || loading}
         {...props}
       >

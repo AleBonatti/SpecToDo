@@ -144,7 +144,7 @@ const ListItem: React.FC<ListItemProps> = ({
                   ? 'danger'
                   : priority === 'medium'
                     ? 'accent'
-                    : 'neutral'
+                    : 'secondary'
               }
               icon={PriorityIcon}
             />

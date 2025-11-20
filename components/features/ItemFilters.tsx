@@ -41,7 +41,7 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
   const priorityVariants = {
     high: 'danger' as const,
     medium: 'accent' as const,
-    low: 'neutral' as const,
+    low: 'secondary' as const,
   };
 
   const handlePriorityToggle = (priority: string) => {

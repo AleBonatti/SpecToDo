@@ -37,11 +37,11 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     const hasError = !!error
 
     const baseStyles =
-      'block w-full appearance-none rounded-lg border bg-white pr-10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-900 dark:focus-visible:ring-primary-500'
+      'block w-full appearance-none rounded-lg border text-white pr-10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
 
     const stateStyles = hasError
-      ? 'border-red-500 text-red-900 focus-visible:ring-red-500 dark:border-red-400 dark:text-red-100'
-      : 'border-neutral-300 text-neutral-900 hover:border-neutral-400 focus-visible:border-primary-500 dark:border-neutral-700 dark:text-neutral-100'
+      ? 'border-red-500 focus-visible:ring-red-500'
+      : 'border-transparent hover:opacity-90'
 
     const sizes = {
       sm: 'h-9 px-3 text-sm',
@@ -72,6 +72,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={selectId}
             className={cn(baseStyles, stateStyles, sizes[size], className)}
+            style={{ backgroundColor: 'rgb(var(--secondary))' }}
             disabled={disabled}
             required={required}
             aria-invalid={hasError}

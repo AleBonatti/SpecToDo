@@ -17,7 +17,6 @@ import Button from '../ui/Button';
 import Tooltip from '../ui/Tooltip';
 import { useUser } from '@/lib/contexts/UserContext';
 import { useTheme } from '@/lib/contexts/ThemeContext';
-import { cn } from '@/lib/utils';
 
 export interface HeaderProps {
   isAuthenticated?: boolean;
@@ -60,10 +59,9 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={cn(
-                        pathname === '/' &&
-                          'bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-400'
-                      )}
+                      style={{
+                        color: pathname === '/' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                      }}
                     >
                       <Home className="h-4 w-4" />
                       <span className="hidden sm:inline">Dashboard</span>
@@ -77,10 +75,9 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={cn(
-                            pathname === '/admin/categories' &&
-                              'bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-400'
-                          )}
+                          style={{
+                            color: pathname === '/admin/categories' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                          }}
                         >
                           <FolderTree className="h-4 w-4" />
                           <span className="hidden sm:inline">Categories</span>
@@ -92,10 +89,9 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={cn(
-                            pathname === '/admin/actions' &&
-                              'bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-400'
-                          )}
+                          style={{
+                            color: pathname === '/admin/actions' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                          }}
                         >
                           <Zap className="h-4 w-4" />
                           <span className="hidden sm:inline">Actions</span>
@@ -107,10 +103,9 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={cn(
-                            pathname === '/admin/users' &&
-                              'bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-400'
-                          )}
+                          style={{
+                            color: pathname === '/admin/users' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                          }}
                         >
                           <Users className="h-4 w-4" />
                           <span className="hidden sm:inline">Users</span>
@@ -124,10 +119,9 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={cn(
-                        pathname === '/account' &&
-                          'bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-400'
-                      )}
+                      style={{
+                        color: pathname === '/account' ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                      }}
                     >
                       <Key className="h-4 w-4" />
                       <span className="hidden sm:inline">Account</span>
