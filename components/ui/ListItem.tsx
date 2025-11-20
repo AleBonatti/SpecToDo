@@ -83,10 +83,9 @@ const ListItem: React.FC<ListItemProps> = ({
         }
       }}
       className={cn(
-        'group relative rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer dark:border-neutral-800 dark:bg-neutral-900',
+        'group relative rounded-xl bg-white p-5 transition-all hover:-translate-y-0.5 cursor-pointer dark:bg-neutral-900',
         done && 'opacity-70',
-        priorityStyle?.borderColor,
-        selected && 'ring-2 ring-primary-500 border-primary-500',
+        selected && 'ring-2 ring-primary-500',
         className
       )}
       role="button"
@@ -121,35 +120,27 @@ const ListItem: React.FC<ListItemProps> = ({
         </div>
       )}
 
-      {/* Top section: Category icon, priority badge, and done toggle */}
-      <div className={cn('mb-3 flex items-start justify-between gap-2', selectionMode && 'pl-8')}>
-        <div className="flex flex-wrap items-center gap-2">
-          {(() => {
-            const CategoryIcon = getIconComponent(categoryIcon);
-            const IconComponent = CategoryIcon || Package;
-            return (
-              <div className="flex items-center gap-1.5 rounded-md bg-primary-50 px-2 py-1 dark:bg-primary-900/20">
-                <IconComponent className="h-4 w-4 text-primary-600 dark:text-primary-400" />
-                <span className="text-xs font-medium text-primary-700 dark:text-primary-300">
-                  {category}
-                </span>
-              </div>
-            );
-          })()}
-          {priority && priorityStyle && (
-            <Badge
-              text={priorityStyle.label}
-              variant={
-                priority === 'high'
-                  ? 'danger'
-                  : priority === 'medium'
-                    ? 'accent'
-                    : 'secondary'
-              }
-              icon={PriorityIcon}
-            />
-          )}
+      {/* Priority badge in top right corner (white) */}
+      {priority && priorityStyle && (
+        <div className="absolute top-3 right-3 z-10">
+          <Badge
+            text={priorityStyle.label}
+            variant={
+              priority === 'high'
+                ? 'danger'
+                : priority === 'medium'
+                  ? 'accent'
+                  : 'secondary'
+            }
+            icon={PriorityIcon}
+            className="bg-white text-neutral-900 shadow-sm dark:bg-neutral-100"
+            style={{ backgroundColor: 'white', color: 'rgb(var(--primary))' }}
+          />
         </div>
+      )}
+
+      {/* Done toggle button in top left */}
+      <div className={cn('mb-3 flex items-start justify-between gap-2', selectionMode && 'pl-8')}>
         <button
           type="button"
           onClick={(e) => {
@@ -174,41 +165,59 @@ const ListItem: React.FC<ListItemProps> = ({
       </div>
 
       {/* Image and Content Layout */}
-      <div className={cn('flex gap-3', imageUrl && 'flex-row')}>
-        {/* Image */}
-        {imageUrl && (
-          <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-            <img
-              src={imageUrl}
-              alt={title}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          </div>
-        )}
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          {/* Title with optional action */}
-          <h3
-            className={cn(
-              'mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100'
-            )}
-          >
-            {action && (
-              <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
-                {action}
-              </span>
-            )}
-            <span className={cn(done && 'line-through')}>{title}</span>
-          </h3>
-
-          {/* Description (if exists) */}
-          {description && (
-            <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
-              {description}
-            </p>
+      <div className={cn('flex flex-col gap-3')}>
+        <div className={cn('flex gap-3', imageUrl && 'flex-row')}>
+          {/* Image */}
+          {imageUrl && (
+            <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+              <img
+                src={imageUrl}
+                alt={title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
           )}
+
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            {/* Title with optional action */}
+            <h3
+              className={cn(
+                'mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100'
+              )}
+            >
+              {action && (
+                <span className="mr-1.5 text-sm font-normal text-accent-600 dark:text-accent-400">
+                  {action}
+                </span>
+              )}
+              <span className={cn(done && 'line-through')}>{title}</span>
+            </h3>
+
+            {/* Description (if exists) */}
+            {description && (
+              <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+                {description}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Category badge in bottom right corner (black) */}
+        <div className="flex justify-end">
+          {(() => {
+            const CategoryIcon = getIconComponent(categoryIcon);
+            const IconComponent = CategoryIcon || Package;
+            return (
+              <Badge
+                text={category}
+                variant="primary"
+                icon={IconComponent}
+                size="sm"
+              />
+            );
+          })()}
         </div>
       </div>
     </div>
