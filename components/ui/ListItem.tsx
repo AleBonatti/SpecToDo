@@ -75,18 +75,21 @@ const ListItem: React.FC<ListItemProps> = ({
     >
       {/* Image Section - Upper half with max 200px height */}
       <div
-        className="relative w-full overflow-hidden rounded-t-xl"
-        style={{ maxHeight: '200px', minHeight: '200px' }}
+        className="relative w-full rounded-t-xl dark:bg-neutral-800"
+        style={{ height: '200px' }}
       >
         {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
+          <div className="absolute inset-2 overflow-hidden rounded-lg">
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              style={{ objectPosition: 'center' }}
+            />
+          </div>
         ) : (
-          <div className="w-full h-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <Package className="h-16 w-16 text-neutral-300 dark:text-neutral-600" />
           </div>
         )}
