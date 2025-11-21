@@ -19,9 +19,6 @@ export interface ListItemProps {
   onClick: (id: string) => void;
   onToggleDone: (id: string, done: boolean) => void;
   className?: string;
-  selectionMode?: boolean;
-  selected?: boolean;
-  onSelectionChange?: (id: string) => void;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
@@ -37,9 +34,6 @@ const ListItem: React.FC<ListItemProps> = ({
   onClick,
   onToggleDone,
   className,
-  selectionMode = false,
-  selected = false,
-  onSelectionChange,
 }) => {
   // Priority configuration
   const priorityConfig = {
@@ -47,7 +41,7 @@ const ListItem: React.FC<ListItemProps> = ({
       icon: AlertCircle,
       badge: 'badge-danger',
       label: 'High',
-      borderColor: 'border-l-4 border-l-danger-500 dark:border-l-danger-400',
+      borderColor: 'text-red-500',
     },
     medium: {
       icon: ArrowUp,
@@ -59,7 +53,7 @@ const ListItem: React.FC<ListItemProps> = ({
       icon: Circle,
       badge: 'bg-success-100 text-success-600',
       label: 'Low',
-      borderColor: 'border-l-4 border-l-success-300 dark:border-l-success-600',
+      borderColor: 'text-green-500 dark:border-l-success-600',
     },
   };
 
@@ -68,18 +62,10 @@ const ListItem: React.FC<ListItemProps> = ({
 
   return (
     <div
-      onClick={(e) => {
-        if (selectionMode && onSelectionChange) {
-          e.stopPropagation();
-          onSelectionChange(id);
-        } else {
-          onClick(id);
-        }
-      }}
+      onClick={() => onClick(id)}
       className={cn(
         'group relative rounded-xl bg-white overflow-hidden transition-all hover:-translate-y-0.5 cursor-pointer dark:bg-neutral-900',
         done && 'opacity-70',
-        selected && 'ring-2 ring-primary-500',
         className
       )}
       role="button"
@@ -87,32 +73,10 @@ const ListItem: React.FC<ListItemProps> = ({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          if (selectionMode && onSelectionChange) {
-            onSelectionChange(id);
-          } else {
-            onClick(id);
-          }
+          onClick(id);
         }
       }}
     >
-      {/* Selection checkbox */}
-      {selectionMode && (
-        <div className="absolute top-3 left-3 z-10 flex items-center justify-center p-1.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={selected}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            onChange={(e) => {
-              e.stopPropagation();
-              onSelectionChange?.(id);
-            }}
-            className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-0 focus:ring-offset-0 dark:border-neutral-600 cursor-pointer"
-            aria-label={`Select ${title}`}
-          />
-        </div>
-      )}
 
       {/* Image Section - Upper half with max 200px height */}
       <div
@@ -158,11 +122,11 @@ const ListItem: React.FC<ListItemProps> = ({
               onToggleDone(id, !done);
             }}
             className={cn(
-              'rounded-full p-1.5 transition-colors bg-white/90 backdrop-blur-sm dark:bg-neutral-900/90',
+              'rounded-full p-1 transition-colors bg-transparent backdrop-blur-sm dark:bg-neutral-900/90',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
               done
-                ? 'text-success-600 hover:text-success-700'
-                : 'text-neutral-400 hover:text-neutral-600'
+                ? 'text-green-500 hover:text-success-700'
+                : 'text-neutral-300 hover:text-neutral-500'
             )}
             aria-label={done ? 'Mark as not done' : 'Mark as done'}
           >
@@ -176,30 +140,35 @@ const ListItem: React.FC<ListItemProps> = ({
       </div>
 
       {/* Content Section - Below image */}
-      <div className={cn('px-6 py-3', selectionMode && 'pt-8')}>
+      <div
+        className="flex flex-col px-6 py-3"
+        style={{ minHeight: '160px' }}
+      >
         {/* Title with optional action */}
-        {action && (
-          <span className="text-sm font-normal text-accent dark:text-accent-400">
-            {action}
-          </span>
-        )}
-        <h3
-          className={cn(
-            'text-base font-medium text-primary dark:text-neutral-100'
+        <div className="flex-grow">
+          {action && (
+            <span className="text-sm font-normal text-accent dark:text-accent-400">
+              {action}
+            </span>
           )}
-        >
-          <span className={cn(done && 'line-through')}>{title}</span>
-        </h3>
+          <h3
+            className={cn(
+              'text-base font-medium text-primary dark:text-neutral-100'
+            )}
+          >
+            <span className={cn(done && 'line-through')}>{title}</span>
+          </h3>
 
-        {/* Description (if exists) */}
-        {description && (
-          <p className="mt-3 line-clamp-2 text-xs text-secondary dark:text-neutral-400">
-            {description}
-          </p>
-        )}
+          {/* Description (if exists) */}
+          {description && (
+            <p className="mt-3 line-clamp-2 text-xs text-secondary dark:text-neutral-400">
+              {description}
+            </p>
+          )}
+        </div>
 
         {/* Category badge in bottom right corner (black) */}
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-3">
           {(() => {
             const CategoryIcon = getIconComponent(categoryIcon);
             const IconComponent = CategoryIcon || Package;

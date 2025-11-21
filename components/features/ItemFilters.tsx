@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Plus, AlertCircle, ArrowUp, Circle, CheckSquare } from 'lucide-react';
+import { Plus, AlertCircle, ArrowUp, Circle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Toggle from '@/components/ui/Toggle';
 import MultiSelectCategoryFilter from '@/components/ui/MultiSelectCategoryFilter';
@@ -16,8 +16,6 @@ export interface ItemFiltersProps {
   selectedPriorities: string[];
   onPriorityChange: (priorities: string[]) => void;
   onAddClick: () => void;
-  selectionMode?: boolean;
-  onToggleSelectionMode?: () => void;
 }
 
 const ItemFilters: React.FC<ItemFiltersProps> = ({
@@ -29,8 +27,6 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
   selectedPriorities,
   onPriorityChange,
   onAddClick,
-  selectionMode = false,
-  onToggleSelectionMode,
 }) => {
   const priorityIcons = {
     high: AlertCircle,
@@ -61,6 +57,7 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
             <MultiSelectCategoryFilter
               categories={categories}
               selectedCategories={selectedCategories}
+              label=""
               onChange={onCategoryChange}
             />
           </div>
@@ -71,21 +68,13 @@ const ItemFilters: React.FC<ItemFiltersProps> = ({
           />
         </div>
         <div className="flex gap-2">
-          {onToggleSelectionMode && (
-            <Button
-              variant={selectionMode ? 'primary' : 'ghost'}
-              icon={<CheckSquare className="h-4 w-4" />}
-              onClick={onToggleSelectionMode}
-            >
-              {selectionMode ? 'Exit Select' : 'Select'}
-            </Button>
-          )}
           <Button
             variant="primary"
             icon={<Plus className="h-4 w-4" />}
             onClick={onAddClick}
-            disabled={selectionMode}
-          ></Button>
+          >
+            Add Item
+          </Button>
         </div>
       </div>
 
